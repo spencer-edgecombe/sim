@@ -1,0 +1,1193 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		8523124D2D6F2EF6002407E5 /* SimKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852312432D6F2EF6002407E5 /* SimKit.framework */; };
+		852312582D6F2EF6002407E5 /* SimKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 852312432D6F2EF6002407E5 /* SimKit.framework */; };
+		852312592D6F2EF6002407E5 /* SimKit.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 852312432D6F2EF6002407E5 /* SimKit.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		852312242D6F2ED0002407E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852312122D6F2ECF002407E5;
+			remoteInfo = SimMulti;
+		};
+		8523122E2D6F2ED0002407E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852312122D6F2ECF002407E5;
+			remoteInfo = SimMulti;
+		};
+		8523124E2D6F2EF6002407E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852312422D6F2EF6002407E5;
+			remoteInfo = SimKit;
+		};
+		852312502D6F2EF6002407E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852312122D6F2ECF002407E5;
+			remoteInfo = SimMulti;
+		};
+		852312562D6F2EF6002407E5 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 852312422D6F2EF6002407E5;
+			remoteInfo = SimKit;
+		};
+		853C41922D6A4EAD005F60DB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 85A298E52D2589D800E65A45 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 85A298EC2D2589D800E65A45;
+			remoteInfo = Sim;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		8523125E2D6F2EF7002407E5 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				852312592D6F2EF6002407E5 /* SimKit.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		852312132D6F2ECF002407E5 /* SimMulti.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimMulti.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		852312232D6F2ED0002407E5 /* SimMultiTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimMultiTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8523122D2D6F2ED0002407E5 /* SimMultiUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimMultiUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		852312432D6F2EF6002407E5 /* SimKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8523124C2D6F2EF6002407E5 /* SimKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		853C418E2D6A4EAD005F60DB /* SimTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SimTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		85A298ED2D2589D800E65A45 /* Sim.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sim.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		852312012D6E7DC4002407E5 /* Exceptions for "Sim" folder in "Sim" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 85A298EC2D2589D800E65A45 /* Sim */;
+		};
+		8523125A2D6F2EF7002407E5 /* Exceptions for "SimKit" folder in "SimKit" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				SimKit.h,
+			);
+			target = 852312422D6F2EF6002407E5 /* SimKit */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		852312142D6F2ECF002407E5 /* SimMulti */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimMulti;
+			sourceTree = "<group>";
+		};
+		852312262D6F2ED0002407E5 /* SimMultiTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimMultiTests;
+			sourceTree = "<group>";
+		};
+		852312302D6F2ED0002407E5 /* SimMultiUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimMultiUITests;
+			sourceTree = "<group>";
+		};
+		852312442D6F2EF6002407E5 /* SimKit */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				8523125A2D6F2EF7002407E5 /* Exceptions for "SimKit" folder in "SimKit" target */,
+			);
+			path = SimKit;
+			sourceTree = "<group>";
+		};
+		852312522D6F2EF6002407E5 /* SimKitTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimKitTests;
+			sourceTree = "<group>";
+		};
+		853C418F2D6A4EAD005F60DB /* SimTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = SimTests;
+			sourceTree = "<group>";
+		};
+		85A298EF2D2589D800E65A45 /* Sim */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				852312012D6E7DC4002407E5 /* Exceptions for "Sim" folder in "Sim" target */,
+			);
+			path = Sim;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		852312102D6F2ECF002407E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				852312582D6F2EF6002407E5 /* SimKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312202D6F2ED0002407E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8523122A2D6F2ED0002407E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312402D6F2EF6002407E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312492D6F2EF6002407E5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8523124D2D6F2EF6002407E5 /* SimKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		853C418B2D6A4EAD005F60DB /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85A298EA2D2589D800E65A45 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		85A298E42D2589D800E65A45 = {
+			isa = PBXGroup;
+			children = (
+				85A298EF2D2589D800E65A45 /* Sim */,
+				853C418F2D6A4EAD005F60DB /* SimTests */,
+				852312142D6F2ECF002407E5 /* SimMulti */,
+				852312262D6F2ED0002407E5 /* SimMultiTests */,
+				852312302D6F2ED0002407E5 /* SimMultiUITests */,
+				852312442D6F2EF6002407E5 /* SimKit */,
+				852312522D6F2EF6002407E5 /* SimKitTests */,
+				85A298EE2D2589D800E65A45 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		85A298EE2D2589D800E65A45 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				85A298ED2D2589D800E65A45 /* Sim.app */,
+				853C418E2D6A4EAD005F60DB /* SimTests.xctest */,
+				852312132D6F2ECF002407E5 /* SimMulti.app */,
+				852312232D6F2ED0002407E5 /* SimMultiTests.xctest */,
+				8523122D2D6F2ED0002407E5 /* SimMultiUITests.xctest */,
+				852312432D6F2EF6002407E5 /* SimKit.framework */,
+				8523124C2D6F2EF6002407E5 /* SimKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		8523123E2D6F2EF6002407E5 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		852312122D6F2ECF002407E5 /* SimMulti */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 852312352D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMulti" */;
+			buildPhases = (
+				8523120F2D6F2ECF002407E5 /* Sources */,
+				852312102D6F2ECF002407E5 /* Frameworks */,
+				852312112D6F2ECF002407E5 /* Resources */,
+				8523125E2D6F2EF7002407E5 /* Embed Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				852312572D6F2EF6002407E5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				852312142D6F2ECF002407E5 /* SimMulti */,
+			);
+			name = SimMulti;
+			packageProductDependencies = (
+			);
+			productName = SimMulti;
+			productReference = 852312132D6F2ECF002407E5 /* SimMulti.app */;
+			productType = "com.apple.product-type.application";
+		};
+		852312222D6F2ED0002407E5 /* SimMultiTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 852312382D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMultiTests" */;
+			buildPhases = (
+				8523121F2D6F2ED0002407E5 /* Sources */,
+				852312202D6F2ED0002407E5 /* Frameworks */,
+				852312212D6F2ED0002407E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				852312252D6F2ED0002407E5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				852312262D6F2ED0002407E5 /* SimMultiTests */,
+			);
+			name = SimMultiTests;
+			packageProductDependencies = (
+			);
+			productName = SimMultiTests;
+			productReference = 852312232D6F2ED0002407E5 /* SimMultiTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		8523122C2D6F2ED0002407E5 /* SimMultiUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8523123B2D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMultiUITests" */;
+			buildPhases = (
+				852312292D6F2ED0002407E5 /* Sources */,
+				8523122A2D6F2ED0002407E5 /* Frameworks */,
+				8523122B2D6F2ED0002407E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8523122F2D6F2ED0002407E5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				852312302D6F2ED0002407E5 /* SimMultiUITests */,
+			);
+			name = SimMultiUITests;
+			packageProductDependencies = (
+			);
+			productName = SimMultiUITests;
+			productReference = 8523122D2D6F2ED0002407E5 /* SimMultiUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		852312422D6F2EF6002407E5 /* SimKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8523125B2D6F2EF7002407E5 /* Build configuration list for PBXNativeTarget "SimKit" */;
+			buildPhases = (
+				8523123E2D6F2EF6002407E5 /* Headers */,
+				8523123F2D6F2EF6002407E5 /* Sources */,
+				852312402D6F2EF6002407E5 /* Frameworks */,
+				852312412D6F2EF6002407E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				852312442D6F2EF6002407E5 /* SimKit */,
+			);
+			name = SimKit;
+			packageProductDependencies = (
+			);
+			productName = SimKit;
+			productReference = 852312432D6F2EF6002407E5 /* SimKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		8523124B2D6F2EF6002407E5 /* SimKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8523125F2D6F2EF7002407E5 /* Build configuration list for PBXNativeTarget "SimKitTests" */;
+			buildPhases = (
+				852312482D6F2EF6002407E5 /* Sources */,
+				852312492D6F2EF6002407E5 /* Frameworks */,
+				8523124A2D6F2EF6002407E5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				8523124F2D6F2EF6002407E5 /* PBXTargetDependency */,
+				852312512D6F2EF6002407E5 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				852312522D6F2EF6002407E5 /* SimKitTests */,
+			);
+			name = SimKitTests;
+			packageProductDependencies = (
+			);
+			productName = SimKitTests;
+			productReference = 8523124C2D6F2EF6002407E5 /* SimKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		853C418D2D6A4EAD005F60DB /* SimTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 853C41962D6A4EAD005F60DB /* Build configuration list for PBXNativeTarget "SimTests" */;
+			buildPhases = (
+				853C418A2D6A4EAD005F60DB /* Sources */,
+				853C418B2D6A4EAD005F60DB /* Frameworks */,
+				853C418C2D6A4EAD005F60DB /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				853C41932D6A4EAD005F60DB /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				853C418F2D6A4EAD005F60DB /* SimTests */,
+			);
+			name = SimTests;
+			packageProductDependencies = (
+			);
+			productName = SimTests;
+			productReference = 853C418E2D6A4EAD005F60DB /* SimTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		85A298EC2D2589D800E65A45 /* Sim */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 85A298FC2D2589D900E65A45 /* Build configuration list for PBXNativeTarget "Sim" */;
+			buildPhases = (
+				85A298E92D2589D800E65A45 /* Sources */,
+				85A298EA2D2589D800E65A45 /* Frameworks */,
+				85A298EB2D2589D800E65A45 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				85A298EF2D2589D800E65A45 /* Sim */,
+			);
+			name = Sim;
+			packageProductDependencies = (
+			);
+			productName = Sim;
+			productReference = 85A298ED2D2589D800E65A45 /* Sim.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		85A298E52D2589D800E65A45 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					852312122D6F2ECF002407E5 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					852312222D6F2ED0002407E5 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 852312122D6F2ECF002407E5;
+					};
+					8523122C2D6F2ED0002407E5 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 852312122D6F2ECF002407E5;
+					};
+					852312422D6F2EF6002407E5 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					8523124B2D6F2EF6002407E5 = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 852312122D6F2ECF002407E5;
+					};
+					853C418D2D6A4EAD005F60DB = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = 85A298EC2D2589D800E65A45;
+					};
+					85A298EC2D2589D800E65A45 = {
+						CreatedOnToolsVersion = 16.0;
+					};
+				};
+			};
+			buildConfigurationList = 85A298E82D2589D800E65A45 /* Build configuration list for PBXProject "Sim" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 85A298E42D2589D800E65A45;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 85A298EE2D2589D800E65A45 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				85A298EC2D2589D800E65A45 /* Sim */,
+				853C418D2D6A4EAD005F60DB /* SimTests */,
+				852312122D6F2ECF002407E5 /* SimMulti */,
+				852312222D6F2ED0002407E5 /* SimMultiTests */,
+				8523122C2D6F2ED0002407E5 /* SimMultiUITests */,
+				852312422D6F2EF6002407E5 /* SimKit */,
+				8523124B2D6F2EF6002407E5 /* SimKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		852312112D6F2ECF002407E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312212D6F2ED0002407E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8523122B2D6F2ED0002407E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312412D6F2EF6002407E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8523124A2D6F2EF6002407E5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		853C418C2D6A4EAD005F60DB /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85A298EB2D2589D800E65A45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		8523120F2D6F2ECF002407E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8523121F2D6F2ED0002407E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312292D6F2ED0002407E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		8523123F2D6F2EF6002407E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		852312482D6F2EF6002407E5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		853C418A2D6A4EAD005F60DB /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		85A298E92D2589D800E65A45 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		852312252D6F2ED0002407E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852312122D6F2ECF002407E5 /* SimMulti */;
+			targetProxy = 852312242D6F2ED0002407E5 /* PBXContainerItemProxy */;
+		};
+		8523122F2D6F2ED0002407E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852312122D6F2ECF002407E5 /* SimMulti */;
+			targetProxy = 8523122E2D6F2ED0002407E5 /* PBXContainerItemProxy */;
+		};
+		8523124F2D6F2EF6002407E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852312422D6F2EF6002407E5 /* SimKit */;
+			targetProxy = 8523124E2D6F2EF6002407E5 /* PBXContainerItemProxy */;
+		};
+		852312512D6F2EF6002407E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852312122D6F2ECF002407E5 /* SimMulti */;
+			targetProxy = 852312502D6F2EF6002407E5 /* PBXContainerItemProxy */;
+		};
+		852312572D6F2EF6002407E5 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 852312422D6F2EF6002407E5 /* SimKit */;
+			targetProxy = 852312562D6F2EF6002407E5 /* PBXContainerItemProxy */;
+		};
+		853C41932D6A4EAD005F60DB /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 85A298EC2D2589D800E65A45 /* Sim */;
+			targetProxy = 853C41922D6A4EAD005F60DB /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		852312362D6F2ED0002407E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SimMulti/SimMulti.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SimMulti/Preview Content\"";
+				DEVELOPMENT_TEAM = DB85A83894;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMulti;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		852312372D6F2ED0002407E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = SimMulti/SimMulti.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"SimMulti/Preview Content\"";
+				DEVELOPMENT_TEAM = DB85A83894;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
+				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
+				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMulti;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		852312392D6F2ED0002407E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMultiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimMulti.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimMulti";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		8523123A2D6F2ED0002407E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMultiTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimMulti.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimMulti";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		8523123C2D6F2ED0002407E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMultiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = SimMulti;
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		8523123D2D6F2ED0002407E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimMultiUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_TARGET_NAME = SimMulti;
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		8523125C2D6F2EF7002407E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = DB85A83894;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		8523125D2D6F2EF7002407E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = DB85A83894;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_MODULE_VERIFIER = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"@executable_path/../Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				MODULE_VERIFIER_SUPPORTED_LANGUAGES = "objective-c objective-c++";
+				MODULE_VERIFIER_SUPPORTED_LANGUAGE_STANDARDS = "gnu17 gnu++20";
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		852312602D6F2EF7002407E5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimMulti.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimMulti";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Debug;
+		};
+		852312612D6F2EF7002407E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALLOW_TARGET_PLATFORM_SPECIALIZATION = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimMulti.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/SimMulti";
+				XROS_DEPLOYMENT_TARGET = 2.0;
+			};
+			name = Release;
+		};
+		853C41942D6A4EAD005F60DB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sim.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sim";
+			};
+			name = Debug;
+		};
+		853C41952D6A4EAD005F60DB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = DB85A83894;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.SimTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sim.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sim";
+			};
+			name = Release;
+		};
+		85A298FA2D2589D900E65A45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		85A298FB2D2589D900E65A45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		85A298FD2D2589D900E65A45 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Sim/Sim.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Sim/Preview Content\"";
+				DEVELOPMENT_TEAM = DB85A83894;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sim/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.Sim;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		85A298FE2D2589D900E65A45 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Sim/Sim.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"Sim/Preview Content\"";
+				DEVELOPMENT_TEAM = DB85A83894;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Sim/Info.plist;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = frieswiththat.Sim;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		852312352D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMulti" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				852312362D6F2ED0002407E5 /* Debug */,
+				852312372D6F2ED0002407E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		852312382D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMultiTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				852312392D6F2ED0002407E5 /* Debug */,
+				8523123A2D6F2ED0002407E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8523123B2D6F2ED0002407E5 /* Build configuration list for PBXNativeTarget "SimMultiUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8523123C2D6F2ED0002407E5 /* Debug */,
+				8523123D2D6F2ED0002407E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8523125B2D6F2EF7002407E5 /* Build configuration list for PBXNativeTarget "SimKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8523125C2D6F2EF7002407E5 /* Debug */,
+				8523125D2D6F2EF7002407E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		8523125F2D6F2EF7002407E5 /* Build configuration list for PBXNativeTarget "SimKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				852312602D6F2EF7002407E5 /* Debug */,
+				852312612D6F2EF7002407E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		853C41962D6A4EAD005F60DB /* Build configuration list for PBXNativeTarget "SimTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				853C41942D6A4EAD005F60DB /* Debug */,
+				853C41952D6A4EAD005F60DB /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85A298E82D2589D800E65A45 /* Build configuration list for PBXProject "Sim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85A298FA2D2589D900E65A45 /* Debug */,
+				85A298FB2D2589D900E65A45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		85A298FC2D2589D900E65A45 /* Build configuration list for PBXNativeTarget "Sim" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				85A298FD2D2589D900E65A45 /* Debug */,
+				85A298FE2D2589D900E65A45 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 85A298E52D2589D800E65A45 /* Project object */;
+}
