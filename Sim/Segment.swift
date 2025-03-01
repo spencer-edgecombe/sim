@@ -11,13 +11,13 @@ import SwiftUI
 /// A segment represents a part of an organism with a head and tail point
 struct Segment: Identifiable, Hashable {
   let id: SimID
-  var head: CGPoint
-  var tail: CGPoint
+  var head: SIMD2<Float>
+  var tail: SIMD2<Float>
   var movement: Movement
   
   // MARK: - Initialization
   
-  init(head: CGPoint, tail: CGPoint, movement: Movement) {
+  init(head: SIMD2<Float>, tail: SIMD2<Float>, movement: Movement) {
     self.id = .segment
     self.head = head
     self.tail = tail
@@ -27,17 +27,16 @@ struct Segment: Identifiable, Hashable {
   // MARK: - Factory Methods
   
   init(
-    head: CGPoint,
-    angle: Angle?,
+    head: SIMD2<Float>,
+    angle: Float?,
     movement: Movement? = nil,
-    length: CGFloat,
-    movementLimit: CGFloat
+    length: Float,
+    movementLimit: Double
     ) {
-    let movement = movement ?? .random(in: -movementLimit...movementLimit)
-    let angle = angle ?? .degrees(Double(Int.random(in: 0..<8) * 45))
-    let x = head.x + length * cos(angle.radians)
-    let y = head.y + length * sin(angle.radians)
-    let tail = CGPoint(x: x, y: y)
+      let movement = movement ?? Movement.random(in: -movementLimit...movementLimit)
+      let x = head.x + length * movement.cosAngle
+      let y = head.y + length * movement.sinAngle
+    let tail = SIMD2<Float>(x: x, y: y)
     self.init(head: head, tail: tail, movement: movement)
   }
   
@@ -53,7 +52,7 @@ struct Segment: Identifiable, Hashable {
   
   // MARK: - Utility Methods
   
-  func duplicate(translation: CGVector) -> Segment {
+  func duplicate(translation: SIMD2<Float>) -> Segment {
     Segment(head: head + translation, tail: tail + translation, movement: movement)
   }
 }

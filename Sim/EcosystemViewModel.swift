@@ -6,7 +6,7 @@ import Combine
 class EcosystemViewModel: ObservableObject {
   // MARK: - Published Properties
   
-  private(set) var points: [[CGPoint]] = []
+  private(set) var points: [[SIMD2<Float>]] = []
   private(set) var path = Path()
   /// Maximum angle of movement for segments
   @Published var movementLimit: Double = 0.01
@@ -18,7 +18,7 @@ class EcosystemViewModel: ObservableObject {
   @Published var mergeSensitivity: Double = 10.0
 
   /// Current boundary size of the ecosystem
-  @Published var boundary: CGSize = Constants.boundary
+  @Published var boundary: CGSize = Constants.boundarySIMD2.size
 
   /// Whether the simulation is currently playing
   @Published var isPlaying: Bool = false
@@ -64,7 +64,10 @@ class EcosystemViewModel: ObservableObject {
           frameRateTask?.cancel()
           frameRateTask = Task {
             await self.ecosystem.stopMoving()
-            await self.ecosystem.startMoving(frameRate: frameRate, chunkSize: Int(self.chunkSize), updateMovesPerSecond: self.updateMovesPerSecond)
+            await self.ecosystem.startMoving(
+              frameRate: frameRate, 
+              chunkSize: Int(self.chunkSize), 
+              updateMovesPerSecond: self.updateMovesPerSecond)
           }
         }
         .store(in: &cancellables)
@@ -78,24 +81,24 @@ class EcosystemViewModel: ObservableObject {
           }
         }
         .store(in: &cancellables)
-      var updateCGPointsTask: Task<Void, Never>?
+      var updatePointsTask: Task<Void, Never>?
       await ecosystem.pointsPublisher
         .sink { points in
-          guard updateCGPointsTask?.isCancelled != false else {
+          guard updatePointsTask?.isCancelled != false else {
             return
           }
-          updateCGPointsTask = Task {
+          updatePointsTask = Task {
             var path = Path()
-            for organismCGPoints in points {
-              path.move(to: organismCGPoints.first!)
-              for point in organismCGPoints.dropFirst() {
-                path.addLine(to: point)
+            for organismPoints in points {
+              path.move(to: organismPoints.first!.point)
+              for simd2 in organismPoints.dropFirst() {
+                path.addLine(to: simd2.point)
               }
             }
             await MainActor.run {
               self.path = path
             }
-            updateCGPointsTask?.cancel()
+            updatePointsTask?.cancel()
           }
         }
         .store(in: &cancellables)
@@ -110,7 +113,7 @@ class EcosystemViewModel: ObservableObject {
 
   func addRandomOrganism() {
     Task {
-      await ecosystem.addRandomOrganism(length: self.segmentSize, movementLimit: self.movementLimit)
+      await ecosystem.addRandomOrganism(length: Float(self.segmentSize), movementLimit: self.movementLimit)
     }
   }
 
@@ -126,8 +129,8 @@ class EcosystemViewModel: ObservableObject {
   
   func reset() {
     Task {
-      await ecosystem.reset(length: self.segmentSize, movementLimit: self.movementLimit)
-      await ecosystem.addRandomOrganism(length: self.segmentSize, movementLimit: self.movementLimit, count: Int(self.organismCount))
+      await ecosystem.reset(length: Float(self.segmentSize), movementLimit: self.movementLimit)
+      await ecosystem.addRandomOrganism(length: Float(self.segmentSize), movementLimit: self.movementLimit, count: Int(self.organismCount))
     }
   }
   
@@ -135,7 +138,10 @@ class EcosystemViewModel: ObservableObject {
     isPlaying.toggle()
     Task {
       if isPlaying {
-        await ecosystem.startMoving(frameRate: self.frameRate, chunkSize: Int(self.chunkSize), updateMovesPerSecond: self.updateMovesPerSecond)
+        await ecosystem.startMoving(
+          frameRate: self.frameRate, 
+          chunkSize: Int(self.chunkSize), 
+          updateMovesPerSecond: self.updateMovesPerSecond)
       } else {
         await ecosystem.stopMoving()
       }

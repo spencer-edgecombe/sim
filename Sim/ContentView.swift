@@ -34,8 +34,8 @@ struct ContentView: View {
   private var canvasView: some View {
       TimelineView(.animation(minimumInterval: 1 / viewModel.refreshRate)) { _ in
         let path = viewModel.path
-        return Canvas(rendersAsynchronously: true) { context, size in
-          context.stroke(path, with: .color(.black))
+        return Canvas(rendersAsynchronously: false) { context, size in
+          context.stroke(path, with: .foreground)
         }
         .drawingGroup()
         .frame(width: Constants.boundary.width, height: Constants.boundary.height)

@@ -30,11 +30,11 @@ actor Ecosystem {
 
   /// The collection of organisms currently in the ecosystem
   var organisms: [Organism] = []
-  var points: [CGPoint] = []
+  var points: [SIMD2<Float>] = []
 
   var ctr = 0
   var lastInterval: Date?
-  var updateCGPointsTask: Task<Void, Never>?
+  var updatePointsTask: Task<Void, Never>?
 
   // MARK: - Private Properties
 
@@ -46,11 +46,11 @@ actor Ecosystem {
 
   /// Subject for broadcasting ecosystem updates
   private let updateSubject = PassthroughSubject<Void, Never>()
-  private let pointsSubject = PassthroughSubject<[[CGPoint]], Never>()
+  private let pointsSubject = PassthroughSubject<[[SIMD2<Float>]], Never>()
   private let mpsSubject = PassthroughSubject<Int, Never>()
   
 
-  private var boundary: CGSize?
+  private var boundary: SIMD2<Float>?
   // MARK: - Initialization
 
   init() {
@@ -61,11 +61,13 @@ actor Ecosystem {
   /// Starts continuous organism movement at the specified frame rate
   func startMoving(
     frameRate: Double,
-    chunkSize: Int, updateMovesPerSecond: @escaping (Double) -> Void) async {
+    chunkSize: Int, 
+    updateMovesPerSecond: @escaping (Double) -> Void,
+    mpsInterval: Double = 10.0) async {
       stopMoving()
       var ctr = 0
       var lastCtr = 0
-      var nextTime = Date().timeIntervalSince1970 + 10
+      var nextTime = Date().timeIntervalSince1970 + mpsInterval
       let organisms = self.organisms
       let availableCores = ProcessInfo.processInfo.activeProcessorCount
       let organismCount = organisms.count
@@ -76,12 +78,12 @@ actor Ecosystem {
           await self.move(chunkSize: chunkSize, organisms: organisms)
           ctr += 1
           if Date().timeIntervalSince1970 > nextTime {
-            await mpsSubject.send(Int(Double(ctr - lastCtr) / 10.0))
+            await mpsSubject.send(Int(Double(ctr - lastCtr) / mpsInterval))
               lastCtr = ctr
-              nextTime = Date().timeIntervalSince1970 + 10
+              nextTime = Date().timeIntervalSince1970 + mpsInterval
             }
           if ctr % 5 == 0 {
-            await updateCGPoints()
+            await updatePoints()
           }
         }
       }
@@ -105,7 +107,7 @@ actor Ecosystem {
         group.addTask {
           // Process multiple organisms in each task to reduce overhead
           for i in chunk..<end {
-            organisms[i].move(boundary: Constants.boundary)
+            organisms[i].move(boundary: Constants.boundarySIMD2)
             //                        }
           }
         }
@@ -114,17 +116,17 @@ actor Ecosystem {
     }
   }
 
-  func setBoundary(size: CGSize) {
+  func setBoundary(size: SIMD2<Float>) {
     boundary = size
   }
 
   // MARK: - Simulation Control
 
   /// Reset the simulation with a new organism configuration
-  func reset(length: CGFloat, movementLimit: CGFloat) async {
+  func reset(length: Float, movementLimit: Double) async {
     stopMoving()
     organisms = []
-    let head = CGPoint(x: 150, y: 100)
+    let head = SIMD2<Float>(x: 150, y: 100)
     let headSegment = Segment(head: head, angle: nil, length: length, movementLimit: movementLimit)
     let segment2 = Segment(head: headSegment.tail, angle: nil, length: length, movementLimit: movementLimit)
     let segment3 = Segment(head: segment2.tail, angle: nil, length: length, movementLimit: movementLimit)
@@ -135,25 +137,25 @@ actor Ecosystem {
   }
 
   func addRandomOrganism(
-    length: CGFloat,
-    movementLimit: CGFloat,
+    length: Float,
+    movementLimit: Double,
     count: Int = 1
   ) async {
     for i in 0..<count {
-      let head = CGPoint(x: 150, y: 100)
+      let head = SIMD2<Float>(x: 150, y: 100)
       let segmentCount = Int.random(in: 2...6)
-      var lastCGPoint = head
+      var lastPoint = head
       var segments: [Segment] = []
       for _ in 0..<segmentCount {
-        let segment = Segment(head: lastCGPoint, angle: nil, length: length, movementLimit: movementLimit)
+        let segment = Segment(head: lastPoint, angle: nil, length: length, movementLimit: movementLimit)
         segments.append(segment)
-        lastCGPoint = segment.tail
+        lastPoint = segment.tail
       }
       let organism = Organism(segments: segments)
       organisms.append(organism)
     }
     updateSubject.send()
-    updateCGPoints()
+    updatePoints()
   }
 
   // MARK: - Organism Management
@@ -164,11 +166,11 @@ actor Ecosystem {
     organisms.append(duplicate)
 
     updateSubject.send()
-    updateCGPoints()
+    updatePoints()
   }
 
-  func updateCGPoints() {
-    guard updateCGPointsTask == nil else {
+  func updatePoints() {
+    guard updatePointsTask == nil else {
       return
     }
     let points = organisms.map { $0.points }
@@ -176,11 +178,11 @@ actor Ecosystem {
     pointsSubject.send(points)
   }
 
-  func updateUpdateCGPointsTask(task: Task<Void, Never>?) {
-    updateCGPointsTask = task
+  func updateupdatePointsTask(task: Task<Void, Never>?) {
+    updatePointsTask = task
   }
 
-  var pointsPublisher: AnyPublisher<[[CGPoint]], Never> {
+  var pointsPublisher: AnyPublisher<[[SIMD2<Float>]], Never> {
     pointsSubject.eraseToAnyPublisher()
   }
 

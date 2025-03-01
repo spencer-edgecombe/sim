@@ -12,28 +12,26 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
   let id: SimID
   
   var segments: [Segment]
-  var points: [CGPoint] = []
-
-  var movement: [CGVector] = []
+  var points: [SIMD2<Float>] = []
 
   init(segments: [Segment]) {
     assert(!segments.isEmpty)
     self.id = .organism
     self.segments = segments
+    
     points = [segments.first!.head] + segments.map(\.tail)
-
   }
 
-  private func updateCGPoints(_ segments: [Segment]) {
+  private func updatePoints(_ segments: [Segment]) {
   }
 
   // Connects two organisms at the head of one organism to a point on the other organism
   private func absorb(_ other: Organism) {
-    let otherHeadCGPoint = other.headSegment.head
-    let tailCGPoint = tail
+    let otherHeadPoint = other.headSegment.head
+    let tailPoint = tail
     
     // Calculate translation before modifying anything
-    let translation: CGVector = otherHeadCGPoint - tailCGPoint
+    let translation: SIMD2<Float> = otherHeadPoint - tailPoint
     
     // Translate the other organism's points first
     other.translate(translation)
@@ -54,18 +52,14 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
     "\(id.identifier): [points...]"
   }
   
-  func move(boundary: CGSize) {
+  func move(boundary: SIMD2<Float>) {
     // Fix the key path syntax and pre-allocate array for better performance
-    var newCGPoints = [CGPoint](repeating: .zero, count: points.count)
-    for i in 0..<points.count {
-      newCGPoints[i] = points[i]
-    }
     
     // Forward pass - rotate from head to tail
     for index in segments.indices {
       // Only rotate points after current segment - direct indexing for better performance
       for pointIndex in (index + 1)..<points.count {
-        newCGPoints[pointIndex] = newCGPoints[pointIndex].rotated(angle: segments[index].movement.angle, around: newCGPoints[index])
+        points[pointIndex] = points[pointIndex].rotated(around: points[index], cosAngle: segments[index].movement.cosAngle, sinAngle: segments[index].movement.sinAngle)
       }
     }
     
@@ -74,17 +68,17 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
       
       // Only rotate points before current segment
       for pointIndex in 0...(-i) {
-        newCGPoints[pointIndex] = newCGPoints[pointIndex].rotated(angle: -segments[-i].movement.angle, around: newCGPoints[-i + 1])
+        points[pointIndex] = points[pointIndex].rotated(around: points[-i + 1], cosAngle: segments[-i].movement.negativeCosAngle, sinAngle: segments[-i].movement.negativeSinAngle)
       }
     }
     
     // More efficient boundary check
-    var minX = CGFloat.infinity
-    var minY = CGFloat.infinity
-    var maxX = -CGFloat.infinity
-    var maxY = -CGFloat.infinity
-    
-    for point in newCGPoints {
+    var minX = Float.infinity
+    var minY = Float.infinity
+    var maxX = -Float.infinity
+    var maxY = -Float.infinity
+
+    for point in points {
       minX = min(minX, point.x)
       minY = min(minY, point.y)
       maxX = max(maxX, point.x)
@@ -94,15 +88,15 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
     // Calculate translation needed to keep within boundaries
 
     
-    var dx: CGFloat = if minX < 0 {
+    let dx: Float = if minX < 0 {
       -minX
-    } else if maxX > boundary.width {
-      boundary.width - maxX
+    } else if maxX > Float(boundary.width) {
+      Float(boundary.width) - maxX
     } else {
       0
     }
 
-    var dy: CGFloat = if minY < 0 {
+    let dy: Float = if minY < 0 {
       -minY
     } else if maxY > boundary.height {
       boundary.height - maxY
@@ -110,17 +104,13 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
       0
     }
 
+
     // Apply translation if needed without creating new points
     if dx != 0 || dy != 0 {
-      for i in 0..<newCGPoints.count {
-        newCGPoints[i].x += dx
-        newCGPoints[i].y += dy
+      for i in 0..<points.count {
+        points[i].x += dx
+        points[i].y += dy
       }
-    }
-    
-    // Update points in single pass
-    for i in points.indices {
-      points[i] = newCGPoints[i]
     }
   }
 }
@@ -128,21 +118,21 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
 // MARK: - Properties
 
 extension Organism {
-  var frame: CGRect {
-    points.reduce(CGRect.zero) { $0.union(.init(origin: $1, size: .zero)) }
+  var frame: SIMD4<Float> {
+    points.reduce(SIMD4.zero) { $0.union($1) }
   }
   
   var headSegment: Segment {
     segments.first!
   }
   
-  var head: CGPoint {
+  var head: SIMD2<Float> {
     get {
       headSegment.head
     }
   }
   
-  func setHead(_ newValue: CGPoint) {
+  func setHead(_ newValue: SIMD2<Float>) {
     segments[0].head = newValue
   }
   
@@ -150,7 +140,7 @@ extension Organism {
     segments.last!
   }
   
-  var tail: CGPoint {
+  var tail: SIMD2<Float> {
     tailSegment.tail
   }
   
@@ -162,8 +152,8 @@ extension Organism {
 // MARK: - Utility
 
 extension Organism {
-  func duplicate(translation: CGVector? = nil) -> Organism {
-    let translation = translation ?? .init(dx: frame.width, dy: frame.height)
+  func duplicate(translation: SIMD2<Float>? = nil) -> Organism {
+    let translation = translation ?? .init(frame.width, frame.height)
     return Organism(segments: segments.map { $0.duplicate(translation: translation) })
   }
   
@@ -176,7 +166,7 @@ extension Organism {
 
 
 
-  func translate(_ vector: CGVector) {
+  func translate(_ vector: SIMD2<Float>) {
     for index in points.indices {
       points[index] += vector
     }

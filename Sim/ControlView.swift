@@ -30,8 +30,8 @@ struct ControlTextField: View {
         .foregroundColor(.secondary)
       TextField("Value", text: $text)
         .textFieldStyle(.roundedBorder)
-        .onChange(of: text) { newValue in
-          if let value = Double(newValue) {
+        .onChange(of: text) {
+          if let value = Double(text) {
             self.value = value
           }
         }
