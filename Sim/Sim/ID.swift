@@ -11,9 +11,14 @@ enum IDType: String, Hashable, CaseIterable {
   case organism
   case segment
   case point
+  case shelter
 }
 
-struct SimID: Hashable, Equatable, CustomStringConvertible {
+struct SimID: Hashable, Equatable, CustomStringConvertible, Identifiable {
+  var id: SimID {
+    self
+  }
+  
   private static var counters: [IDType: Int] = IDType.allCases.reduce(into: [:]) { result, type in
     result[type] = 0
   }
@@ -44,5 +49,9 @@ struct SimID: Hashable, Equatable, CustomStringConvertible {
   
   static var point: SimID {
     SimID(type: .point)
+  }
+  
+  static var shelter: SimID {
+    SimID(type: .shelter)
   }
 }

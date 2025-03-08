@@ -25,7 +25,7 @@ struct ContentView: View {
   var body: some View {
     NavigationSplitView {
       ControlView(viewModel: viewModel)
-        .navigationSplitViewColumnWidth(min: 200, ideal: 400)
+        .navigationSplitViewColumnWidth(250)
     } detail: {
       canvasView
     }
@@ -33,12 +33,43 @@ struct ContentView: View {
   
   private var canvasView: some View {
       TimelineView(.animation(minimumInterval: 1 / viewModel.refreshRate)) { _ in
-        let path = viewModel.path
-        return Canvas(rendersAsynchronously: false) { context, size in
+        Canvas(rendersAsynchronously: false) { context, size in
+          context.stroke(viewModel.boundaryPath, with: .color(.black))
+          // Draw shelters with blue fill and stroke
+          
+            let path = viewModel.path
+            let shelterPath = viewModel.shelterPath
+//            let shelterCounters = viewModel.shelterCounters
+//            let organismCenters = viewModel.organismCenters
+          context.fill(shelterPath, with: .color(.green.opacity(0.2)))
+          
+          // Draw organisms
           context.stroke(path, with: .foreground)
+
+          // Draw organism shelter counters near each organism
+          // Only draw counters if we have the same number of counters as organisms
+//          if shelterCounters.count == organismCenters.count {
+//            for (index, center) in organismCenters.enumerated() {
+//              let counterValue = shelterCounters[index]
+//              
+//              // Only draw counter if it's greater than 0
+//              if counterValue > 0 {
+//                let font = Font.system(size: 14).weight(.bold)
+//                let text = Text("\(index) - \(counterValue)")
+//                  .font(font)
+//                  .foregroundColor(.green)
+//
+//                // Position the counter text slightly offset from the organism center
+//                let textPoint = CGPoint(x: center.x + 10, y: center.y - 10)
+//                context.draw(text, at: textPoint)
+//              }
+//            }
+//            
+//          }
+            context.stroke(viewModel.wipOrganismPath, with: .color(.red))
         }
         .drawingGroup()
-        .frame(width: Constants.boundary.width, height: Constants.boundary.height)
+        .frame(width: Constants.boundarySIMD2.size.width, height: Constants.boundarySIMD2.size.height)
       }
   }
 }
@@ -49,7 +80,4 @@ struct ContentView: View {
   @Previewable @StateObject var viewModel = EcosystemViewModel()
 
   ContentView(viewModel: viewModel)
-    .task {
-      viewModel.togglePlayback()
-    }
 }

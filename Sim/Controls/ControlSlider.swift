@@ -15,7 +15,6 @@ struct ControlSlider: View {
 
   var body: some View {
     VStack(alignment: .leading) {
-
       Text(title)
         .font(.caption)
         .foregroundColor(.secondary)
@@ -25,5 +24,6 @@ struct ControlSlider: View {
         Slider(value: $value, in: range, step: step)
       }
     }
+    
   }
 }
