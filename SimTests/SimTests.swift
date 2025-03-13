@@ -76,7 +76,7 @@ class SimTests: XCTestCase {
       .store(in: &cancellables)
     
     // Use a shorter mpsInterval (0.5 seconds) for faster test execution
-    await ecosystem?.startMoving(frameRate: 0, chunkSize: 2, updateMovesPerSecond: { _ in }, mpsInterval: 0.05)
+    await ecosystem?.startMoving(frameRate: 0, updateMovesPerSecond: { _ in }, mpsInterval: 0.05)
 
     // Wait for either the mpsPublisher to emit or the timeout to occur
     await fulfillment(of: [exp], timeout: 3) // 3 second timeout as additional safety

@@ -22,7 +22,8 @@ struct ControlView: View {
           .listRowSeparator(.hidden, edges: .all)
     }
     .task {
-      await Ecosystem.shared.organismIDPublisher
+      await Ecosystem.shared.statePublisher
+        .map(\.organismIDs)
         .sink { ids in
           Task { @MainActor in
             self.ids = ids
@@ -44,6 +45,9 @@ struct ControlView: View {
   private var playbackSection: some View {
     Group {
       Text("\(Int(viewModel.movesPerSecond)) mps")
+        .font(.title)
+        .fontWeight(.bold)
+      Text("\(ids.count) organisms")
         .font(.title)
         .fontWeight(.bold)
       HStack {
@@ -143,6 +147,12 @@ struct ControlView: View {
         onChange: nil
       )
       ControlPicker(
+        title: "Shelter Count",
+        selectedOption: $viewModel.shelterCount,
+        options: [1, 5, 10, 20, 50, 100],
+        onChange: nil
+      )
+      ControlPicker(
         title: "Metal Iterations",
         selectedOption: $viewModel.metalIterationCount,
         options: [1, 10, 100, 1000, 10000, 100000, 1000000],
@@ -163,11 +173,25 @@ struct ControlView: View {
         "Segment Size",
         value: $viewModel.segmentSize
       )
-      ControlPicker(
-        title: "Chunk Size",
-        selectedOption: $viewModel.chunkSize,
-        options: [1, 2, 3],
-        onChange: nil
+      ControlTextField(
+        "Min Starting Energy",
+        value: $viewModel.minStartingEnergy
+      )
+      ControlTextField(
+        "Max Starting Energy",
+        value: $viewModel.maxStartingEnergy
+      )
+      ControlTextField(
+        "Shelter Energy Gain",
+        value: $viewModel.shelterEnergyGainRate
+      )
+      ControlTextField(
+        "Division Threshold",
+        value: $viewModel.divisionThreshold
+      )
+      ControlTextField(
+        "Shelter Reset Interval",
+        value: $viewModel.shelterResetInterval
       )
       ForEach(ids) { id in
         OrganismControl(id: id)

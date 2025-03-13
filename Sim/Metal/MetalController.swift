@@ -7,6 +7,7 @@
 
 import Metal
 import MetalKit
+import Foundation
 
 class MetalController {
   static let shared: MetalController = MetalController()!
@@ -42,136 +43,154 @@ class MetalController {
     func moveOrganisms(
         points: [SIMD2<Float>],
         segments: [Segment],
-        organismIndices: [UInt32],
+        pointIndices: [UInt32],
+        segmentIndices: [UInt32],
         boundary: SIMD2<Float>,
         shelters: [MetalShelter] = [],
-        shelterCounters: [Int] = [],
+        energyLevels: [Int32] = [],
         iterationCount: UInt32 = 1,
-        completion: @escaping ([SIMD2<Float>], [Int]) -> Void
-    ) {
-        guard let pipelineState = moveOrganismsPipelineState,
-              !points.isEmpty,
-              !segments.isEmpty,
-              organismIndices.count > 1 else {
-            completion(points, shelterCounters)
+        energyGainRate: Int32 = 1
+    ) async -> ([SIMD2<Float>], [Int32]) {
+        return await withCheckedContinuation { continuation in
+          guard let pipelineState = moveOrganismsPipelineState,
+                !points.isEmpty,
+                !segments.isEmpty,
+                pointIndices.count > 1,
+                segmentIndices.count > 1 else {
+            continuation.resume(returning: (points, energyLevels))
             return
-        }
-        
-        // Create buffers
-        let pointsBuffer = device.makeBuffer(bytes: points, length: points.count * MemoryLayout<SIMD2<Float>>.stride, options: .storageModeShared)
-        
-        // Convert segments to metal-friendly format
-        var metalSegments = segments.map { segment -> MetalSegment in
+          }
+
+          // Create buffers
+          let pointsBuffer = device.makeBuffer(bytes: points, length: points.count * MemoryLayout<SIMD2<Float>>.stride, options: .storageModeShared)
+
+          // Convert segments to metal-friendly format
+          var metalSegments = segments.map { segment -> MetalSegment in
             MetalSegment(
-                head: segment.head,
-                tail: segment.tail,
-                cosAngle: segment.cosAngle,
-                sinAngle: segment.sinAngle,
-                negativeCosAngle: segment.negativeCosAngle,
-                negativeSinAngle: segment.negativeSinAngle
+              head: segment.head,
+              tail: segment.tail,
+              cosAngle: segment.cosAngle,
+              sinAngle: segment.sinAngle,
+              negativeCosAngle: segment.negativeCosAngle,
+              negativeSinAngle: segment.negativeSinAngle,
+              shelterCosAngle: segment.shelterCosAngle,
+              shelterSinAngle: segment.shelterSinAngle,
+              shelterNegativeCosAngle: segment.shelterNegativeCosAngle,
+              shelterNegativeSinAngle: segment.shelterNegativeSinAngle
             )
-        }
-        
-        let segmentsBuffer = device.makeBuffer(
+          }
+
+          let segmentsBuffer = device.makeBuffer(
             bytes: &metalSegments,
             length: metalSegments.count * MemoryLayout<MetalSegment>.stride,
             options: .storageModeShared
-        )
-        
-        // Create shelter buffer
-        var metalShelters = shelters
-        let sheltersBuffer = device.makeBuffer(
+          )
+
+          // Create point indices buffer
+          var pointIndicesArray = pointIndices
+          let pointIndicesBuffer = device.makeBuffer(
+            bytes: &pointIndicesArray,
+            length: pointIndices.count * MemoryLayout<UInt32>.stride,
+            options: .storageModeShared
+          )
+
+          // Create segment indices buffer
+          var segmentIndicesArray = segmentIndices
+          let segmentIndicesBuffer = device.makeBuffer(
+            bytes: &segmentIndicesArray,
+            length: segmentIndices.count * MemoryLayout<UInt32>.stride,
+            options: .storageModeShared
+          )
+
+          // Create shelter buffer
+          var metalShelters = shelters
+          let sheltersBuffer = device.makeBuffer(
             bytes: &metalShelters,
             length: max(1, metalShelters.count) * MemoryLayout<MetalShelter>.stride,
             options: .storageModeShared
-        )
-        
-        // Create shelter counters buffer
-        var counters = shelterCounters.isEmpty ? Array(repeating: 0, count: organismIndices.count - 1) : shelterCounters
-        let countersBuffer = device.makeBuffer(
-            bytes: &counters,
-            length: counters.count * MemoryLayout<Int>.stride,
+          )
+
+          // Create energy levels buffer
+          var energyLevels = energyLevels.isEmpty ? Array(repeating: 0, count: pointIndices.count - 1) : energyLevels
+          let energyLevelsBuffer = device.makeBuffer(
+            bytes: &energyLevels,
+            length: energyLevels.count * MemoryLayout<Int32>.stride,
             options: .storageModeShared
-        )
-        
-        // Create metadata
-        var metadata = OrganismMetadata(
+          )
+
+          // Create metadata
+          var metadata = OrganismMetadata(
             pointCount: UInt32(points.count),
             boundary: boundary,
             iterationCount: iterationCount,
-            shelterCount: UInt32(shelters.count)
-        )
-        
-        let metadataBuffer = device.makeBuffer(
+            shelterCount: UInt32(shelters.count),
+            energyGainRate: energyGainRate
+          )
+
+          let metadataBuffer = device.makeBuffer(
             bytes: &metadata,
             length: MemoryLayout<OrganismMetadata>.stride,
             options: .storageModeShared
-        )
-        
-        // Create organism indices buffer
-        var indices = organismIndices
-        let indicesBuffer = device.makeBuffer(
-            bytes: &indices,
-            length: indices.count * MemoryLayout<UInt32>.stride,
-            options: .storageModeShared
-        )
-        
-        // Create command buffer and encoder
-        guard let commandBuffer = commandQueue.makeCommandBuffer(),
-              let computeEncoder = commandBuffer.makeComputeCommandEncoder() else {
-            completion(points, shelterCounters)
+          )
+
+          // Create command buffer and encoder
+          guard let commandBuffer = commandQueue.makeCommandBuffer(),
+                let computeEncoder = commandBuffer.makeComputeCommandEncoder() else {
+            continuation.resume(returning: (points, energyLevels))
             return
-        }
-        
-        // Set up the compute encoder
-        computeEncoder.setComputePipelineState(pipelineState)
-        computeEncoder.setBuffer(pointsBuffer, offset: 0, index: 0)
-        computeEncoder.setBuffer(segmentsBuffer, offset: 0, index: 1)
-        computeEncoder.setBuffer(metadataBuffer, offset: 0, index: 2)
-        computeEncoder.setBuffer(indicesBuffer, offset: 0, index: 3)
-        computeEncoder.setBuffer(sheltersBuffer, offset: 0, index: 4)
-        computeEncoder.setBuffer(countersBuffer, offset: 0, index: 5)
-        
-        // Calculate threadgroup size and count
-        let threadsPerGrid = MTLSize(width: organismIndices.count - 1, height: 1, depth: 1)
-        let maxThreadsPerThreadgroup = pipelineState.maxTotalThreadsPerThreadgroup
-        let threadsPerThreadgroup = MTLSize(
+          }
+
+          // Set up the compute encoder
+          computeEncoder.setComputePipelineState(pipelineState)
+          computeEncoder.setBuffer(pointsBuffer, offset: 0, index: 0)
+          computeEncoder.setBuffer(segmentsBuffer, offset: 0, index: 1)
+          computeEncoder.setBuffer(metadataBuffer, offset: 0, index: 2)
+          computeEncoder.setBuffer(pointIndicesBuffer, offset: 0, index: 3)
+          computeEncoder.setBuffer(segmentIndicesBuffer, offset: 0, index: 4)
+          computeEncoder.setBuffer(sheltersBuffer, offset: 0, index: 5)
+          computeEncoder.setBuffer(energyLevelsBuffer, offset: 0, index: 6)
+
+          // Calculate threadgroup size and count
+          let threadsPerGrid = MTLSize(width: pointIndices.count - 1, height: 1, depth: 1)
+          let maxThreadsPerThreadgroup = pipelineState.maxTotalThreadsPerThreadgroup
+          let threadsPerThreadgroup = MTLSize(
             width: min(maxThreadsPerThreadgroup, threadsPerGrid.width),
             height: 1,
             depth: 1
-        )
-        
-        // Dispatch the compute kernel
-        computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
-        computeEncoder.endEncoding()
-        
-        // Add completion handler
-        commandBuffer.addCompletedHandler { _ in
+          )
+
+          // Dispatch the compute kernel
+          computeEncoder.dispatchThreads(threadsPerGrid, threadsPerThreadgroup: threadsPerThreadgroup)
+          computeEncoder.endEncoding()
+
+          // Add completion handler
+          commandBuffer.addCompletedHandler { _ in
             // Read results back from the buffer
             guard let pointsData = pointsBuffer?.contents(),
-                  let countersData = countersBuffer?.contents() else {
-                completion(points, shelterCounters)
-                return
+                  let energyLevelsData = energyLevelsBuffer?.contents() else {
+              continuation.resume(returning: (points, energyLevels))
+              return
             }
-            
+
             let updatedPoints = UnsafeBufferPointer<SIMD2<Float>>(
-                start: pointsData.assumingMemoryBound(to: SIMD2<Float>.self),
-                count: points.count
+              start: pointsData.assumingMemoryBound(to: SIMD2<Float>.self),
+              count: points.count
             )
-            
-            let updatedCounters = UnsafeBufferPointer<Int>(
-                start: countersData.assumingMemoryBound(to: Int.self),
-                count: counters.count
+
+            let updatedEnergyLevels = UnsafeBufferPointer<Int32>(
+              start: energyLevelsData.assumingMemoryBound(to: Int32.self),
+              count: energyLevels.count
             )
-            
+
             // Convert to Swift array
             let resultPoints = Array(updatedPoints)
-            let resultCounters = Array(updatedCounters)
-            completion(resultPoints, resultCounters)
+            let resultEnergyLevels = Array(updatedEnergyLevels)
+            continuation.resume(returning: (resultPoints, resultEnergyLevels))
+          }
+
+          // Commit command buffer
+          commandBuffer.commit()
         }
-        
-        // Commit command buffer
-        commandBuffer.commit()
     }
 }
 
@@ -183,6 +202,10 @@ struct MetalSegment {
     var sinAngle: Float
     var negativeCosAngle: Float
     var negativeSinAngle: Float
+    var shelterCosAngle: Float
+    var shelterSinAngle: Float
+    var shelterNegativeCosAngle: Float
+    var shelterNegativeSinAngle: Float
 }
 
 // Metal-compatible OrganismMetadata structure
@@ -191,4 +214,5 @@ struct OrganismMetadata {
     var boundary: SIMD2<Float>
     var iterationCount: UInt32
     var shelterCount: UInt32
+    var energyGainRate: Int32
 }

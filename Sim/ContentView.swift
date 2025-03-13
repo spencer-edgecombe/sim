@@ -36,37 +36,14 @@ struct ContentView: View {
         Canvas(rendersAsynchronously: false) { context, size in
           context.stroke(viewModel.boundaryPath, with: .color(.black))
           // Draw shelters with blue fill and stroke
-          
-            let path = viewModel.path
-            let shelterPath = viewModel.shelterPath
-//            let shelterCounters = viewModel.shelterCounters
-//            let organismCenters = viewModel.organismCenters
-          context.fill(shelterPath, with: .color(.green.opacity(0.2)))
-          
+          context.fill(viewModel.shelterPath, with: .color(.green.opacity(0.2)))
+
           // Draw organisms
-          context.stroke(path, with: .foreground)
+          context.stroke(viewModel.path, with: .foreground)
 
           // Draw organism shelter counters near each organism
           // Only draw counters if we have the same number of counters as organisms
-//          if shelterCounters.count == organismCenters.count {
-//            for (index, center) in organismCenters.enumerated() {
-//              let counterValue = shelterCounters[index]
-//              
-//              // Only draw counter if it's greater than 0
-//              if counterValue > 0 {
-//                let font = Font.system(size: 14).weight(.bold)
-//                let text = Text("\(index) - \(counterValue)")
-//                  .font(font)
-//                  .foregroundColor(.green)
-//
-//                // Position the counter text slightly offset from the organism center
-//                let textPoint = CGPoint(x: center.x + 10, y: center.y - 10)
-//                context.draw(text, at: textPoint)
-//              }
-//            }
-//            
-//          }
-            context.stroke(viewModel.wipOrganismPath, with: .color(.red))
+          context.stroke(viewModel.wipOrganismPath, with: .color(.blue))
         }
         .drawingGroup()
         .frame(width: Constants.boundarySIMD2.size.width, height: Constants.boundarySIMD2.size.height)

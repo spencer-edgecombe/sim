@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 /// A Shelter is a rectangular area where organisms can seek refuge and accumulate a counter value.
-struct Shelter: Identifiable {
+struct Shelter: Hashable, Identifiable {
   let id: SimID
   
   /// Position of the top-left corner of the shelter

@@ -7,7 +7,7 @@ class EcosystemViewModel: ObservableObject {
   // MARK: - Published Properties
   
   private(set) var points: [[SIMD2<Float>]] = []
-  private(set) var path = Path()
+  @Published private(set) var path = Path()
 
   /// Path for drawing shelters on the canvas
   @Published private(set) var shelterPath = Path()
@@ -19,7 +19,7 @@ class EcosystemViewModel: ObservableObject {
   @Published private(set) var shelters: [Shelter] = []
   
   /// Shelter counters for organisms
-  @Published private(set) var shelterCounters: [Int] = []
+  @Published private(set) var energyLevels: [Int32] = []
   
   /// Center points of organisms for counter display
   @Published private(set) var organismCenters: [CGPoint] = []
@@ -50,7 +50,16 @@ class EcosystemViewModel: ObservableObject {
 
   @Published var organismCount: Int = 100
 
-  @Published var chunkSize: Int = 2
+  @Published var minStartingEnergy: Int32 = 10000
+  @Published var maxStartingEnergy: Int32 = 100000
+
+  @Published var shelterEnergyGainRate: Int32 = 1
+
+  @Published var shelterCount: Int = 10
+
+  @Published var divisionThreshold: Int32 = 200000
+
+  @Published var shelterResetInterval: Int = 0
 
   @Published private(set) var movesPerSecond: Int = 0
 
@@ -58,105 +67,72 @@ class EcosystemViewModel: ObservableObject {
   // MARK: - Private Properties
   
   private let ecosystem: Ecosystem
-  private var subscriptionTask: Task<Void, Never>?
-  var cancellables = Set<AnyCancellable>()
-
-  private let isPlayingSubject = PassthroughSubject<Bool, Never>()
-  private let frameRateSubject = PassthroughSubject<Int, Never>()
+  private var cancellables = Set<AnyCancellable>()
 
   // MARK: - Initialization
   
   init(_ ecosystem: Ecosystem = .shared) {
     self.ecosystem = ecosystem
-
     subscribeToUpdates()
   }
 
   func subscribeToUpdates() {
     Task {
-      var frameRateTask: Task<Void, Never>?
-      frameRateSubject
-        .debounce(for: 0.1, scheduler: DispatchQueue.main)
-        .sink { frameRate in
-          frameRateTask?.cancel()
-          frameRateTask = Task {
-            await self.ecosystem.stopMoving()
-            await self.ecosystem.startMoving(
-              frameRate: Int(frameRate), 
-              chunkSize: Int(self.chunkSize), 
-              updateMovesPerSecond: self.updateMovesPerSecond,
-              metalIterationCount: UInt32(self.metalIterationCount)
-            )
-          }
-        }
-        .store(in: &cancellables)
-
-      var updateMpsTask: Task<Void, Never>?
-      await ecosystem.mpsPublisher
-        .sink { mps in
-          updateMpsTask?.cancel()
-          updateMpsTask = Task { @MainActor in
-            self.movesPerSecond = mps
-          }
-        }
-        .store(in: &cancellables)
-        
-      // Subscribe to shelter counter updates
-      var updateShelterCountersTask: Task<Void, Never>?
-      await ecosystem.shelterCounterPublisher
-        .sink { shelterCounters in
-          updateShelterCountersTask?.cancel()
-          updateShelterCountersTask = Task { @MainActor in
-            self.shelterCounters = shelterCounters
-          }
-        }
-        .store(in: &cancellables)
-      
-      // Subscribe to ecosystem updates to get shelters
-      await ecosystem.updatePublisher
-        .sink { [weak self] _ in
-          Task { @MainActor in
-            await self?.updateShelters()
-          }
-        }
-        .store(in: &cancellables)
-        
-      var updatePointsTask: Task<Void, Never>?
-      await ecosystem.pointsPublisher
-        .sink { points in
-          guard updatePointsTask?.isCancelled != false else {
-            return
-          }
-          updatePointsTask = Task {
-            var path = Path()
-            var centers: [CGPoint] = []
-            
-            // Process each organism's points
-            for organismPoints in points {
-              // Add organism path
-              path.move(to: organismPoints.first!.point)
-              for simd2 in organismPoints.dropFirst() {
-                path.addLine(to: simd2.point)
-              }
-              
-              // Calculate organism center (average of all points)
-              if !organismPoints.isEmpty {
-                let sum = organismPoints.reduce(SIMD2<Float>.zero) { $0 + $1 }
-                let avgX = sum.x / Float(organismPoints.count)
-                let avgY = sum.y / Float(organismPoints.count)
-                centers.append(CGPoint(x: CGFloat(avgX), y: CGFloat(avgY)))
-              }
-            }
-            
-            await MainActor.run {
-              self.path = path
-              self.organismCenters = centers
-            }
-            updatePointsTask?.cancel()
-          }
+      await ecosystem.statePublisher
+        .receive(on: DispatchQueue.main)
+        .sink { [weak self] state in
+          guard let self else { return }
+          
+          // Update all state at once from ecosystem state
+          self.points = state.points
+          self.energyLevels = state.energyLevels
+          self.shelters = state.shelters
+          self.movesPerSecond = state.movesPerSecond
+          
+          // Update derived UI state
+          self.updatePaths(from: state)
         }
         .store(in: &cancellables)
     }
+  }
+  
+  private func updatePaths(from state: EcosystemState) {
+    // Update organism path
+    var path = Path()
+    var centers: [CGPoint] = []
+    
+    // Process each organism's points
+    for organismPoints in state.points {
+      guard !organismPoints.isEmpty else { continue }
+      
+      // Add organism path
+      path.move(to: organismPoints.first!.point)
+      for simd2 in organismPoints.dropFirst() {
+        path.addLine(to: simd2.point)
+      }
+      
+      // Calculate organism center (average of all points)
+      let sum = organismPoints.reduce(SIMD2<Float>.zero) { $0 + $1 }
+      let avgX = sum.x / Float(organismPoints.count)
+      let avgY = sum.y / Float(organismPoints.count)
+      centers.append(CGPoint(x: CGFloat(avgX), y: CGFloat(avgY)))
+    }
+    
+    self.path = path
+    self.organismCenters = centers
+    
+    // Update shelter path
+    var shelterPath = Path()
+    for shelter in state.shelters {
+      let rect = CGRect(
+        x: CGFloat(shelter.position.x),
+        y: CGFloat(shelter.position.y),
+        width: CGFloat(shelter.size.x),
+        height: CGFloat(shelter.size.y)
+      )
+      shelterPath.addRect(rect)
+    }
+    self.shelterPath = shelterPath
   }
 
   var wipOrganism: Organism? {
@@ -167,7 +143,12 @@ class EcosystemViewModel: ObservableObject {
       let head = lastPoint
       // segment length away from last point at nextPointAngle[i]
       let tail = lastPoint + SIMD2<Float>(cos(Float(wipOrganismNextPointAngle[i])), sin(Float(wipOrganismNextPointAngle[i]))) * Float(segmentSize)
-      let segment = Segment(head: head, tail: tail, angle: Float(wipOrganismNextPointAngle[i]))
+      let segment = Segment(
+        head: head,
+        tail: tail,
+        angle: Float(wipOrganismNextPointAngle[i]),
+        shelterAngle: Float(wipOrganismNextPointAngle[i])
+      )
       segments.append(segment)
       lastPoint = tail
     }
@@ -240,7 +221,12 @@ class EcosystemViewModel: ObservableObject {
 
   func addRandomOrganism() {
     Task {
-      await ecosystem.addRandomOrganism(length: self.segmentSize, movementLimit: self.movementLimit)
+      await ecosystem.addRandomOrganism(
+        length: self.segmentSize, 
+        movementLimit: self.movementLimit,
+        minEnergy: minStartingEnergy,
+        maxEnergy: maxStartingEnergy
+      )
     }
   }
   
@@ -272,16 +258,27 @@ class EcosystemViewModel: ObservableObject {
   }
 
   deinit {
-    subscriptionTask?.cancel()
+    cancellables.forEach { $0.cancel() }
   }
   
   // MARK: - Public Methods
   
   func reset() {
     Task {
-      await ecosystem.reset(length: Float(self.segmentSize), movementLimit: self.movementLimit)
-      await ecosystem.addRandomShelter(count: 10)
-      await ecosystem.addRandomOrganism(length: Float(self.segmentSize), movementLimit: self.movementLimit, count: Int(self.organismCount))
+      await ecosystem.reset(
+        length: Float(self.segmentSize),
+        movementLimit: self.movementLimit,
+        divisionThreshold: self.divisionThreshold,
+        shelterResetInterval: self.shelterResetInterval
+      )
+      await ecosystem.addRandomShelter(count: self.shelterCount)
+      await ecosystem.addRandomOrganism(
+        length: Float(self.segmentSize), 
+        movementLimit: self.movementLimit, 
+        count: Int(self.organismCount),
+        minEnergy: minStartingEnergy,
+        maxEnergy: maxStartingEnergy
+      )
     }
   }
   
@@ -291,9 +288,9 @@ class EcosystemViewModel: ObservableObject {
       if isPlaying {
         await ecosystem.startMoving(
           frameRate: self.frameRate, 
-          chunkSize: Int(self.chunkSize), 
           updateMovesPerSecond: self.updateMovesPerSecond,
-          metalIterationCount: UInt32(self.metalIterationCount)
+          metalIterationCount: UInt32(self.metalIterationCount),
+          energyGainRate: self.shelterEnergyGainRate
         )
       } else {
         await ecosystem.stopMoving()
@@ -309,12 +306,18 @@ class EcosystemViewModel: ObservableObject {
       Task {
         await ecosystem.stopMoving()
         // Perform a single step with the current metal iteration count
-        await ecosystem.step(metalIterationCount: UInt32(self.metalIterationCount))
+        await ecosystem.step(
+          metalIterationCount: UInt32(self.metalIterationCount),
+          energyGainRate: self.shelterEnergyGainRate
+        )
       }
     } else {
       Task {
         // Perform a single step with the current metal iteration count
-        await ecosystem.step(metalIterationCount: UInt32(self.metalIterationCount))
+        await ecosystem.step(
+          metalIterationCount: UInt32(self.metalIterationCount),
+          energyGainRate: self.shelterEnergyGainRate
+        )
       }
     }
   }
