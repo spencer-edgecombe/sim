@@ -72,6 +72,9 @@ actor Ecosystem {
   private var lastShelterReset = 0
   private var shelterResetInterval: Int = 0
 
+  private var divisionThreshold: Int32 = 200000
+  private var minOrganismCount: Int = 0
+
   // MARK: - Initialization
 
   init() {
@@ -252,13 +255,15 @@ actor Ecosystem {
     length: Float,
     movementLimit: Double,
     divisionThreshold: Int32 = 200000,
-    shelterResetInterval: Int = 0
+    shelterResetInterval: Int = 0,
+    minOrganismCount: Int = 0
   ) async {
     stopMoving()
     shelters = []
     organisms = []
     self.divisionThreshold = divisionThreshold
     self.shelterResetInterval = shelterResetInterval
+    self.minOrganismCount = minOrganismCount
     self.lastShelterReset = moveCounter
     fullUpdate()
   }
@@ -366,6 +371,34 @@ actor Ecosystem {
 
   private func removeDeadOrganisms() {
     organisms.removeAll { $0.energy <= 0 }
+    
+    // Replenish organisms if count falls below minimum
+    if minOrganismCount > 0 && organisms.count < minOrganismCount {
+      let countToAdd = minOrganismCount - organisms.count
+      for _ in 0..<countToAdd {
+        let head = SIMD2<Float>(
+          x: Float.random(in: 0...Constants.boundarySIMD2.x),
+          y: Float.random(in: 0...Constants.boundarySIMD2.y)
+        )
+        let segmentCount = Int.random(in: 2...6)
+        var lastPoint = head
+        var segments: [Segment] = []
+        for _ in 0..<segmentCount {
+          let segment = Segment(
+            head: lastPoint,
+            angle: nil,
+            shelterAngle: nil,
+            length: 10,
+            movementLimit: 0.01
+          )
+          segments.append(segment)
+          lastPoint = segment.tail
+        }
+        let organism = Organism(segments: segments, initialEnergy: 10000)
+        organisms.append(organism)
+      }
+    }
+    
     fullUpdate()
   }
 
@@ -400,8 +433,6 @@ actor Ecosystem {
   func getEnergyLevels() -> [Int32] {
     return organisms.map { $0.energy }
   }
-
-  private var divisionThreshold: Int32 = 200000
 }
 
 // MARK: - Preview

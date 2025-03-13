@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConvertible {
-  let id: SimID
+  var id: SimID
   
   var segments: [Segment]
   var points: [SIMD2<Float>] = []
@@ -61,7 +61,9 @@ extension Organism {
     let safeTranslation = translation ?? SIMD2<Float>(50, 50) // Use fixed offset instead of frame
     
     let duplicateSegments = segments.map { $0.duplicate(translation: safeTranslation) }
-    return Organism(segments: duplicateSegments, initialEnergy: halfEnergy)
+    let duplicate = Organism(segments: duplicateSegments, initialEnergy: halfEnergy)
+    duplicate.id = id.duplicated() // Use the new duplicated() function
+    return duplicate
   }
   
   func grow(angle: Float? = nil, shelterAngle: Float? = nil, length: Float? = nil) {

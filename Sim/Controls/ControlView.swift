@@ -147,6 +147,12 @@ struct ControlView: View {
         onChange: nil
       )
       ControlPicker(
+        title: "Min Organism Count",
+        selectedOption: $viewModel.minOrganismCount,
+        options: [0, 10, 25, 50, 100, 250, 500],
+        onChange: nil
+      )
+      ControlPicker(
         title: "Shelter Count",
         selectedOption: $viewModel.shelterCount,
         options: [1, 5, 10, 20, 50, 100],

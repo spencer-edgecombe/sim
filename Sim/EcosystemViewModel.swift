@@ -50,6 +50,8 @@ class EcosystemViewModel: ObservableObject {
 
   @Published var organismCount: Int = 100
 
+  @Published var minOrganismCount: Int = 50
+
   @Published var minStartingEnergy: Int32 = 10000
   @Published var maxStartingEnergy: Int32 = 100000
 
@@ -269,7 +271,8 @@ class EcosystemViewModel: ObservableObject {
         length: Float(self.segmentSize),
         movementLimit: self.movementLimit,
         divisionThreshold: self.divisionThreshold,
-        shelterResetInterval: self.shelterResetInterval
+        shelterResetInterval: self.shelterResetInterval,
+        minOrganismCount: self.minOrganismCount
       )
       await ecosystem.addRandomShelter(count: self.shelterCount)
       await ecosystem.addRandomOrganism(
