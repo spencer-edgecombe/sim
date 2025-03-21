@@ -95,6 +95,10 @@ extension SIMD2<Float> {
   var height: Float {
     y
   }
+
+  var rectangle: simd_float2x2 {
+    .init(self, .zero)
+  }
 }
 
 extension CGPoint {
@@ -109,28 +113,52 @@ extension CGSize {
   }
 }
 
-// MARK: - SIMD4 Extension
 
-extension SIMD4 {
-  /// Returns the z component as width
-  var width: Scalar {
-    z
+extension simd_float2x2 {
+
+  var minX: Float {
+    columns.0.x
   }
-  
-  /// Returns the w component as height
-  var height: Scalar {
-    w
+
+  var minY: Float {
+    columns.0.y
+  }
+
+  var maxX: Float {
+    columns.0.x + columns.1.x
+  }
+
+  var maxY: Float {
+    columns.0.y + columns.1.y
+  }
+
+  var width: Float {
+    columns.1.x
+  }
+
+  var height: Float {
+    columns.1.y
+  }
+
+  var midX: Float {
+    columns.0.x + columns.1.x / 2
+  }
+
+  var midY: Float {
+    columns.0.y + columns.1.y / 2
   }
   
   /// Returns a new SIMD4 that is the smallest rectangle containing both this rectangle and the specified point.
   /// - Parameter other: The point to union with this rectangle.
   /// - Returns: The union of the rectangle and the point.
-  func union(_ other: SIMD2<Float>) -> SIMD4<Float> where Scalar == Float {
-    SIMD4(
-      SIMD2(x, other.x).min(),
-      SIMD2(y, other.y).min(),
-      SIMD2(z, other.x).max(),
-      SIMD2(w, other.y).max()
+  func union(_ other: SIMD2<Float>) -> simd_float2x2  {
+    let minX = SIMD2(minX, other.x).min()
+    let minY = SIMD2(minY, other.y).min()
+    let maxX = SIMD2(maxX, other.x).max()
+    let maxY = SIMD2(maxY, other.y).max()
+    return simd_float2x2(
+      SIMD2(minX, minY),
+      SIMD2(maxX - minX, maxY - minY)
     )
   }
 }

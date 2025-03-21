@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftUI
+import simd
 
 class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConvertible {
   var id: SimID
@@ -45,8 +46,10 @@ class Organism: Identifiable, CustomStringConvertible, CustomDebugStringConverti
 // MARK: - Properties
 
 extension Organism {
-  var frame: SIMD4<Float> {
-    points.reduce(SIMD4(points.first!.x, points.first!.y, 0, 0)) { $0.union($1) }
+  var frame: simd_float2x2 {
+    points.dropFirst().reduce(points.first!.rectangle) { partialResult, point in
+      partialResult.union(point)
+    }
   }
 }
 

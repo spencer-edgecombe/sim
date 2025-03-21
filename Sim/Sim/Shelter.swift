@@ -34,8 +34,5 @@ struct Shelter: Hashable, Identifiable {
 
 // MARK: - Metal Compatibility
 
-/// Metal-compatible version of Shelter for passing to compute shaders
-struct MetalShelter {
-  var position: SIMD2<Float>
-  var size: SIMD2<Float>
-} 
+// Since Shelter now matches the Metal format exactly, we can use typealias
+typealias MetalShelter = Shelter 

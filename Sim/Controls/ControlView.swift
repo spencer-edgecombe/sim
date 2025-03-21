@@ -16,10 +16,10 @@ struct ControlView: View {
 
   var body: some View {
     List {
-        playbackSection
-          .listRowSeparator(.hidden, edges: .all)
-        controlsSection
-          .listRowSeparator(.hidden, edges: .all)
+      playbackSection
+        .listRowSeparator(.hidden, edges: .all)
+      controlsSection
+        .listRowSeparator(.hidden, edges: .all)
     }
     .task {
       await Ecosystem.shared.statePublisher
@@ -33,10 +33,9 @@ struct ControlView: View {
     }
     .symbolVariant(.fill)
     .symbolVariant(.circle)
+    .tint(.orange)
     .imageScale(.large)
-    .padding()
     .buttonStyle(.plain)
-    .listStyle(.bordered)
   }
 
 
@@ -52,7 +51,9 @@ struct ControlView: View {
         .fontWeight(.bold)
       HStack {
         Button(action: {
-           viewModel.togglePlayback()
+          Task {
+            await viewModel.togglePlayback()
+          }
         }) {
           Image(systemName: viewModel.isPlaying ? "pause" : "play")
             .font(.title)
@@ -81,57 +82,16 @@ struct ControlView: View {
               .symbolRenderingMode(.none)
             Image(systemName: "questionmark")
               .foregroundStyle(.primary)
-
           }
           .font(.title)
-        }
-        Button(action: {
-          viewModel.editingWipOrganism.toggle()
-        }) {
-          ZStack {
-            Image(systemName: "circle.badge.\( viewModel.editingWipOrganism ?  "minus" : "plus")")
-              .foregroundStyle(.primary, .clear)
-              .symbolRenderingMode(.none)
-            Image(systemName: "pencil")          .symbolVariant(.none)
-          }
-          .font(.title)
-        }
-
-      }
-      if viewModel.editingWipOrganism {
-        Text("Start")
-          .font(.headline)
-        HStack {
-          ControlTextField("x", value: $viewModel.wipOrganismStartX)
-          ControlTextField("y", value: $viewModel.wipOrganismStartY)
-        }
-          ForEach(viewModel.wipOrganismMovementAngle.indices, id: \.self) { i in
-            Text("Segment \(i + 1)")
-              .bold()
-              .padding(.top, 8)
-
-              ControlTextField("Next", value: .init(get: {
-                viewModel.wipOrganismNextPointAngle[i]
-              }, set: { newValue in
-                viewModel.wipOrganismNextPointAngle[i] = newValue
-              }))
-              ControlTextField("Movement", value: .init(get: {
-                viewModel.wipOrganismMovementAngle[i]
-              }, set: { newValue in
-                viewModel.wipOrganismMovementAngle[i] = newValue
-              }))
-        }
-
-        Button("Add segment", systemImage: "plus") {
-          viewModel.addWipSegment()
-        }
-        .padding(.top, 8)
-        Button("Done", systemImage: "checkmark") {
-          viewModel.addWipSegment()
         }
       }
       Divider()
-      ControlTextField("Frame Rate", value: $viewModel.frameRate)
+      ControlTextField("Frame Rate", value: .init(get: {
+        Double(viewModel.controls.refreshRate)
+      }, set: { newValue in
+        viewModel.controls.refreshRate = Int(newValue)
+      }))
     }
     .buttonStyle(.borderless)
     .foregroundStyle(.black, .black.secondary, .black.tertiary)
@@ -141,63 +101,106 @@ struct ControlView: View {
     Group {
       ControlPicker(
         title: "Organism Count",
-        selectedOption: $viewModel.organismCount,
+        selectedOption: .init(get: {
+          viewModel.controls.organismCount
+        }, set: { newValue in
+          viewModel.controls.organismCount = newValue
+        }),
         options: [1, 10, 100, 1000, 10000, 100000, 1000000],
-        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"],
-        onChange: nil
+        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"]
       )
       ControlPicker(
         title: "Min Organism Count",
-        selectedOption: $viewModel.minOrganismCount,
-        options: [0, 10, 25, 50, 100, 250, 500],
-        onChange: nil
+        selectedOption: .init(get: {
+          viewModel.controls.minOrganismCount
+        }, set: { newValue in
+          viewModel.controls.minOrganismCount = newValue
+        }),
+        options: [0, 10, 25, 50, 100, 250, 500]
       )
       ControlPicker(
         title: "Shelter Count",
-        selectedOption: $viewModel.shelterCount,
-        options: [1, 5, 10, 20, 50, 100],
-        onChange: nil
+        selectedOption: .init(get: {
+          viewModel.controls.shelterCount
+        }, set: { newValue in
+          viewModel.controls.shelterCount = newValue
+        }),
+        options: [1, 5, 10, 20, 50, 100]
       )
       ControlPicker(
         title: "Metal Iterations",
-        selectedOption: $viewModel.metalIterationCount,
+        selectedOption: .init(get: {
+          viewModel.controls.iterationCount
+        }, set: { newValue in
+          viewModel.controls.iterationCount = newValue
+        }),
         options: [1, 10, 100, 1000, 10000, 100000, 1000000],
-        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"],
-        onChange: nil
+        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"]
       )
       ControlPicker(
         title: "Refresh Rate",
-        selectedOption: $viewModel.refreshRate,
-        options: [1, 24, 60, 120, 240],
-        onChange: nil
+        selectedOption: .init(get: {
+          viewModel.controls.refreshRate
+        }, set: { newValue in
+          viewModel.controls.refreshRate = newValue
+        }),
+        options: [1, 24, 60, 120, 240]
       )
       ControlTextField(
         "Movement Limit",
-        value: $viewModel.movementLimit
+        value: .init(get: {
+          viewModel.controls.movementLimit
+        }, set: { newValue in
+          viewModel.controls.movementLimit = newValue
+        })
       )
       ControlTextField(
         "Segment Size",
-        value: $viewModel.segmentSize
+        value: .init(get: {
+          viewModel.controls.segmentSize
+        }, set: { newValue in
+          viewModel.controls.segmentSize = newValue
+        })
       )
       ControlTextField(
         "Min Starting Energy",
-        value: $viewModel.minStartingEnergy
+        value: .init(get: {
+          viewModel.controls.minStartingEnergy
+        }, set: { newValue in
+          viewModel.controls.minStartingEnergy = newValue
+        })
       )
       ControlTextField(
         "Max Starting Energy",
-        value: $viewModel.maxStartingEnergy
+        value: .init(get: {
+          viewModel.controls.maxStartingEnergy
+        }, set: { newValue in
+          viewModel.controls.maxStartingEnergy = newValue
+        })
       )
       ControlTextField(
         "Shelter Energy Gain",
-        value: $viewModel.shelterEnergyGainRate
+        value: .init(get: {
+          viewModel.controls.shelterEnergyGainRate
+        }, set: { newValue in
+          viewModel.controls.shelterEnergyGainRate = newValue
+        })
       )
       ControlTextField(
         "Division Threshold",
-        value: $viewModel.divisionThreshold
+        value: .init(get: {
+          viewModel.controls.divisionThreshold
+        }, set: { newValue in
+          viewModel.controls.divisionThreshold = newValue
+        })
       )
       ControlTextField(
         "Shelter Reset Interval",
-        value: $viewModel.shelterResetInterval
+        value: .init(get: {
+          viewModel.controls.shelterResetInterval
+        }, set: { newValue in
+          viewModel.controls.shelterResetInterval = newValue
+        })
       )
       ForEach(ids) { id in
         OrganismControl(id: id)

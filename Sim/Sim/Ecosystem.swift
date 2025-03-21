@@ -84,7 +84,6 @@ actor Ecosystem {
 
   /// Starts continuous organism movement at the specified frame rate
   func startMoving(
-    frameRate: Int,
     updateMovesPerSecond: @escaping (Int) -> Void,
     mpsInterval: Double = 1.0,
     metalIterationCount: UInt32 = 1000,
@@ -117,22 +116,15 @@ actor Ecosystem {
         
         // Calculate and report performance metrics
         let endTime = Date().timeIntervalSince1970
+        var movesPerSecond: Int?
         if endTime > nextTime {
           let elapsed = endTime - nextTime + mpsInterval
           // Multiply by iterations to get true moves per second
-          let movesPerSecond = Double(ctr - lastCtr) / elapsed
-          updateMovesPerSecond(Int(movesPerSecond))
+          movesPerSecond = Int(Double(ctr - lastCtr) / elapsed)
           lastCtr = ctr
           nextTime = endTime + mpsInterval
         }
-        
-        // Sleep to maintain the desired frame rate
-        let processingTime = Date().timeIntervalSince(startTime)
-        let sleepTime = max(0, 1.0 / Double(max(1, frameRate)) - processingTime)
-
-        if sleepTime > 0 {
-          try? await Task.sleep(nanoseconds: UInt64(sleepTime * 1_000_000_000))
-        }
+        await fullUpdate(movesPerSecond: movesPerSecond)
       }
     }
   }
@@ -143,11 +135,8 @@ actor Ecosystem {
     movementTask = nil
   }
 
-  /// Performs a single step of organism movement
-  func step(metalIterationCount: UInt32 = 1, energyGainRate: Int32 = 1) async {
+  private func internalStep(metalIterationCount: UInt32 = 1, energyGainRate: Int32 = 1) async {
     // Only proceed if we have organisms to process
-    guard !organisms.isEmpty else { return }
-    
     // Increment move counter
     moveCounter += Int(metalIterationCount)
     
@@ -180,11 +169,6 @@ actor Ecosystem {
       segmentIndices.append(UInt32(allSegments.count))
     }
 
-    // Convert shelters to Metal format
-    let metalShelters = shelters.map { shelter -> MetalShelter in
-      MetalShelter(position: shelter.position, size: shelter.size)
-    }
-
     let metalController = MetalController.shared
     
     // Wait for Metal computation to complete
@@ -194,7 +178,7 @@ actor Ecosystem {
       pointIndices: pointIndices,
       segmentIndices: segmentIndices,
       boundary: Constants.boundarySIMD2,
-      shelters: metalShelters,
+      shelters: shelters,
       energyLevels: energyLevels,
       iterationCount: metalIterationCount,
       energyGainRate: energyGainRate
@@ -228,23 +212,27 @@ actor Ecosystem {
     }
     
     // Check for division threshold and duplicate organisms that qualify
-    var newOrganisms: [Organism] = []
     for organism in organisms {
       if organism.energy >= divisionThreshold {
         // Create duplicate with random offset
-        let randomOffset = SIMD2<Float>(
-          Float.random(in: -50...50),
-          Float.random(in: -50...50)
+        self.organisms.append(
+          organism.duplicate(
+            translation: SIMD2<Float>(
+              x: Float.random(in: -10...10),
+              y: Float.random(in: -10...10)
+            )
+          )
         )
-        let duplicate = organism.duplicate(translation: randomOffset)
-        newOrganisms.append(duplicate)
       }
     }
-    self.organisms.append(contentsOf: newOrganisms)
 
     // Remove any organisms that have died
     removeDeadOrganisms()
-    
+  }
+
+  /// Performs a single step of organism movement
+  func step(metalIterationCount: UInt32 = 1, energyGainRate: Int32 = 1) async {
+    await internalStep(metalIterationCount: metalIterationCount, energyGainRate: energyGainRate)
     fullUpdate()
   }
 
@@ -275,33 +263,27 @@ actor Ecosystem {
     minEnergy: Int32 = 0,
     maxEnergy: Int32 = 0
   ) {
-    for _ in 0..<count {
-      let head = SIMD2<Float>(
-        x: Float.random(in: 0...Constants.boundarySIMD2.x),
-        y: Float.random(in: 0...Constants.boundarySIMD2.y)
+    organisms.append(contentsOf: (0..<count).map { _ in
+    Organism(
+        segments: (0..<Int.random(in: 2...6)).reduce(into: [Segment]()) { segments, _ in
+          segments.append(Segment(
+            head: segments.last?.tail ?? SIMD2<Float>(
+              x: Float.random(in: 0...Constants.boundarySIMD2.x),
+              y: Float.random(in: 0...Constants.boundarySIMD2.y)
+            ),
+            angle: nil,
+            shelterAngle: nil,
+            length: length,
+            movementLimit: movementLimit
+          ))
+        },
+        initialEnergy: Int32.random(in: minEnergy...maxEnergy)
       )
-      let segmentCount = Int.random(in: 2...6)
-      var lastPoint = head
-      var segments: [Segment] = []
-      for _ in 0..<segmentCount {
-        let segment = Segment(
-          head: lastPoint,
-          angle: nil,
-          shelterAngle: nil,
-          length: length,
-          movementLimit: movementLimit
-        )
-        segments.append(segment)
-        lastPoint = segment.tail
-      }
-      let initialEnergy = minEnergy == maxEnergy ? minEnergy : Int32.random(in: minEnergy...maxEnergy)
-      let organism = Organism(segments: segments, initialEnergy: initialEnergy)
-      organisms.append(organism)
-    }
+    })
     fullUpdate()
   }
 
-  private func fullUpdate(movesPerSecond: Int? = nil) {
+   func fullUpdate(movesPerSecond: Int? = nil) {
     let mps: Int
     if let movesPerSecond {
       mps = movesPerSecond
@@ -331,14 +313,6 @@ actor Ecosystem {
   /// Publisher for ecosystem state updates
   var statePublisher: AnyPublisher<EcosystemState, Never> {
     stateSubject
-      .removeDuplicates { prev, next in
-        // Only emit if there are meaningful changes
-        prev.points == next.points &&
-        prev.energyLevels == next.energyLevels &&
-        prev.organismIDs == next.organismIDs &&
-        prev.shelters == next.shelters &&
-        prev.movesPerSecond == next.movesPerSecond
-      }
       .eraseToAnyPublisher()
   }
 
@@ -359,13 +333,6 @@ actor Ecosystem {
       return
     }
     organisms[index].grow()
-    fullUpdate()
-  }
-
-  func updatePoints() {
-    guard updatePointsTask == nil else {
-      return
-    }
     fullUpdate()
   }
 
@@ -424,15 +391,6 @@ actor Ecosystem {
     }
   }
 
-  /// Returns the current shelters in the ecosystem
-  func getShelters() -> [Shelter] {
-    return shelters
-  }
-  
-  /// Returns the energy level values for all organisms
-  func getEnergyLevels() -> [Int32] {
-    return organisms.map { $0.energy }
-  }
 }
 
 // MARK: - Preview

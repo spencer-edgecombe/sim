@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-
+import SwiftData
 @main
 struct SimApp: App {
   @StateObject private var viewModel = EcosystemViewModel()
@@ -17,6 +17,8 @@ struct SimApp: App {
     WindowGroup(id: "ecosystem") {
       ContentView(viewModel: viewModel)
     }
+#if os(macOS)
     .defaultSize(width: 800, height: 600)
+#endif
   }
 }
