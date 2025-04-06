@@ -9,7 +9,7 @@ import Foundation
 import SwiftUI
 
 /// A Shelter is a rectangular area where organisms can seek refuge and accumulate a counter value.
-struct Shelter: Identifiable {
+struct Shelter: Hashable, Identifiable {
   let id: SimID
   
   /// Position of the top-left corner of the shelter
@@ -34,8 +34,5 @@ struct Shelter: Identifiable {
 
 // MARK: - Metal Compatibility
 
-/// Metal-compatible version of Shelter for passing to compute shaders
-struct MetalShelter {
-  var position: SIMD2<Float>
-  var size: SIMD2<Float>
-} 
+// Since Shelter now matches the Metal format exactly, we can use typealias
+typealias MetalShelter = Shelter 

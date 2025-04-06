@@ -15,6 +15,7 @@ protocol ConvertsFromString {
 extension Double: ConvertsFromString {}
 extension Float: ConvertsFromString {}
 extension Int: ConvertsFromString {}
+extension Int32: ConvertsFromString {}
 
 struct ControlTextField<Value: ConvertsFromString>: View {
   let title: String

@@ -68,6 +68,8 @@ struct ControlPicker<Value: Hashable & CustomStringConvertible>: View {
 }
 
 #Preview {
-  ControlPicker(title: "Picker", selectedOption: .constant(1), options: [1, 2, 3], onChange: nil)
-    .pickerStyle(.menu)
+  List {
+    ControlPicker(title: "Picker", selectedOption: .constant(1), options: [1, 2, 3], onChange: nil)
+  }
+  .pickerStyle(.palette)
 }

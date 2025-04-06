@@ -30,8 +30,35 @@ struct SimID: Hashable, Equatable, CustomStringConvertible, Identifiable {
   }
 
   var identifier: String
+  private var parentIdentifier: String?
+  private var duplicateCount: Int?
+
   init(type: IDType) {
     self.identifier = "\(type)-\(SimID.count(for: type))"
+  }
+
+  private init(identifier: String, parentIdentifier: String?, duplicateCount: Int?) {
+    self.identifier = identifier
+    self.parentIdentifier = parentIdentifier
+    self.duplicateCount = duplicateCount
+  }
+
+  func duplicated() -> SimID {
+    if let parentId = parentIdentifier {
+      // If this is already a duplicate, create a new one with same parent but different count
+      return SimID(
+        identifier: "\(parentId)-\(duplicateCount! + 1)",
+        parentIdentifier: parentId,
+        duplicateCount: duplicateCount! + 1
+      )
+    } else {
+      // If this is an original, create first duplicate
+      return SimID(
+        identifier: "\(identifier)-2",
+        parentIdentifier: identifier,
+        duplicateCount: 2
+      )
+    }
   }
 
   var description: String {
