@@ -6,96 +6,99 @@
 //
 
 import SwiftUI
-import Combine
+import SwiftData
 
+/// Panel that displays simulation statistics, save/load actions, and all adjustable controls
+/// for the ``EcosystemViewModel``.
 struct ControlView: View {
 
   @State var ids: [SimID] = []
-  @State var cancellables = Set<AnyCancellable>()
-  @ObservedObject var viewModel: EcosystemViewModel
+  var viewModel: EcosystemViewModel
+  @Environment(\.dismiss) private var dismiss
+  @State private var showSaveControls = false
+  @State private var showLoadControls = false
 
   var body: some View {
-    List {
-      playbackSection
-        .listRowSeparator(.hidden, edges: .all)
-      controlsSection
-        .listRowSeparator(.hidden, edges: .all)
-    }
-    .task {
-      await Ecosystem.shared.statePublisher
-        .map(\.organismIDs)
-        .sink { ids in
-          Task { @MainActor in
-            self.ids = ids
+    NavigationView {
+      List {
+        Section {
+          Group {
+            VStack(alignment: .leading) {
+              Text(viewModel.movesPerSecond.description + " mps")
+              Text(ids.count.description + " organisms")
+            }
+            HStack {
+              Button("save", systemImage: "tray.and.arrow.down.fill") {
+                showSaveControls = true
+              }
+              Button("load", systemImage: "tray.and.arrow.up.fill") {
+                showLoadControls = true
+              }
+              Spacer()
+            }
+          }
+          .buttonStyle(SquareButtonStyle())
+          .fontWeight(.light)
+          .labelStyle(.iconOnly)
+          .font(.largeTitle)
+          .listRowBackground(Color.clear)
+          .listRowInsets(.init(top: 8, leading: 8, bottom: 8, trailing: 8))
+          .listRowSeparator(.hidden)
+        }
+        Section {
+          controlsSection
+            .listRowSeparator(.hidden, edges: .all)
+        }
+      }
+      .scrollClipDisabled()
+      .scrollContentBackground(.hidden)
+      .background(Material.thick)
+      .toolbar {
+        ToolbarItem(placement: .primaryAction) {
+          Button("close", systemImage: "chevron.down") {
+            dismiss()
           }
         }
-        .store(in: &cancellables)
+        ToolbarItem(placement: .navigation) {
+          Button(
+            viewModel.isPlaying ? "pause" : "play", 
+            systemImage: viewModel.isPlaying ? "pause" : "play"
+          ) {
+            Task {
+              await viewModel.togglePlayback()
+            }
+          }
+        }
+        ToolbarItem(placement: .navigation) {
+          Button("step", systemImage: "forward") {
+            viewModel.step()
+          }
+        }
+        ToolbarItem(placement: .navigation) {
+          Button("reset", systemImage: "arrow.counterclockwise") {
+            viewModel.reset()
+          }
+        }
+        
+      }
+      .task {
+        for await state in await Ecosystem.shared.stateStream {
+          self.ids = state.organismIDs
+        }
+      }
+      .buttonStyle(ControlButtonStyle())
     }
-    .symbolVariant(.fill)
-    .symbolVariant(.circle)
-    .tint(.orange)
-    .imageScale(.large)
-    .buttonStyle(.plain)
+    .sheet(isPresented: $showSaveControls) {
+      SaveControlsView(viewModel: viewModel)
+    }
+    .sheet(isPresented: $showLoadControls) {
+      LoadControlsView(viewModel: viewModel)
+    }
+    .tint(.indigo)
   }
 
 
   // MARK: - View Components
-
-  private var playbackSection: some View {
-    Group {
-      Text("\(Int(viewModel.movesPerSecond)) mps")
-        .font(.title)
-        .fontWeight(.bold)
-      Text("\(ids.count) organisms")
-        .font(.title)
-        .fontWeight(.bold)
-      HStack {
-        Button(action: {
-          Task {
-            await viewModel.togglePlayback()
-          }
-        }) {
-          Image(systemName: viewModel.isPlaying ? "pause" : "play")
-            .font(.title)
-        }
-        Button(action: {
-          viewModel.step()
-        }) {
-          Image(systemName: "forward")
-            .foregroundStyle(.primary)
-            .font(.title)
-        }
-        .help("Step forward one iteration")
-        Button(action: {
-          viewModel.reset()
-        }) {
-          Image(systemName: "arrow.counterclockwise")
-            .foregroundStyle(.primary)
-            .font(.title)
-        }
-        Button(action: {
-          viewModel.addRandomOrganism()
-        }) {
-          ZStack {
-            Image(systemName: "circle.badge.plus")
-              .foregroundStyle(.primary, .clear)
-              .symbolRenderingMode(.none)
-            Image(systemName: "questionmark")
-              .foregroundStyle(.primary)
-          }
-          .font(.title)
-        }
-      }
-      Divider()
-      ControlTextField("Frame Rate", value: .init(get: {
-        Double(viewModel.controls.refreshRate)
-      }, set: { newValue in
-        viewModel.controls.refreshRate = Int(newValue)
-      }))
-    }
-    .buttonStyle(.borderless)
-    .foregroundStyle(.black, .black.secondary, .black.tertiary)
-  }
 
   private var controlsSection: some View {
     Group {
@@ -106,8 +109,8 @@ struct ControlView: View {
         }, set: { newValue in
           viewModel.controls.organismCount = newValue
         }),
-        options: [1, 10, 100, 1000, 10000, 100000, 1000000],
-        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"]
+        options: [1, 10, 100, 1000, 10000, 100000],
+        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵"]
       )
       ControlPicker(
         title: "Min Organism Count",
@@ -116,7 +119,7 @@ struct ControlView: View {
         }, set: { newValue in
           viewModel.controls.minOrganismCount = newValue
         }),
-        options: [0, 10, 25, 50, 100, 250, 500]
+        options: [0, 1, 10, 100, 1000]
       )
       ControlPicker(
         title: "Shelter Count",
@@ -125,7 +128,7 @@ struct ControlView: View {
         }, set: { newValue in
           viewModel.controls.shelterCount = newValue
         }),
-        options: [1, 5, 10, 20, 50, 100]
+        options: [0, 1, 10, 50]
       )
       ControlPicker(
         title: "Metal Iterations",
@@ -134,8 +137,8 @@ struct ControlView: View {
         }, set: { newValue in
           viewModel.controls.iterationCount = newValue
         }),
-        options: [1, 10, 100, 1000, 10000, 100000, 1000000],
-        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵", "10⁶"]
+        options: [1, 10, 100, 1000, 10000, 100000],
+        labels: ["1", "10", "10²", "10³", "10⁴", "10⁵"]
       )
       ControlPicker(
         title: "Refresh Rate",
@@ -202,16 +205,26 @@ struct ControlView: View {
           viewModel.controls.shelterResetInterval = newValue
         })
       )
+      ControlToggle(
+        title: "Dead Organisms Become Shelters",
+        isOn: .init(get: {
+          viewModel.controls.deadOrganismsBecomeShelters
+        }, set: { newValue in
+          viewModel.controls.deadOrganismsBecomeShelters = newValue
+        })
+      )
       ForEach(ids) { id in
         OrganismControl(id: id)
       }
     }
-    .pickerStyle(.menu)
+    .pickerStyle(.segmented)
   }
 }
 
-#Preview {
-  @Previewable @StateObject var viewModel = EcosystemViewModel()
+#Preview(traits: .previewData) {
+  @Previewable @State var viewModel = EcosystemViewModel()
 
   ContentView(viewModel: viewModel)
 }
+
+

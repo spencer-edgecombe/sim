@@ -1,32 +1,36 @@
 import SwiftUI
-import Combine
 
-/// View model that manages the state and updates of the ecosystem visualization
+/// View model that bridges the ``Ecosystem`` actor with SwiftUI, converting simulation
+/// state into drawable ``Path`` values and exposing playback controls.
+@Observable
 @MainActor
-class EcosystemViewModel: ObservableObject {
+class EcosystemViewModel {
   // MARK: - Published Properties
   
-  @Published private(set) var path: Path = Path()
+  /// Drawable path representing all organism bodies.
+  private(set) var path: Path = Path()
 
-  /// Path for drawing shelters on the canvas
-  @Published private(set) var shelterPath = Path()
+  /// Path for drawing shelters on the canvas.
+  private(set) var shelterPath = Path()
 
-  /// Path for drawing shelters on the canvas
-  @Published private(set) var boundaryPath: Path = Path(CGRect(x: 0, y: 0, width: CGFloat(Constants.boundarySIMD2.x), height: CGFloat(Constants.boundarySIMD2.y)))
+  /// Path outlining the simulation boundary.
+  private(set) var boundaryPath: Path = Path(CGRect(x: 0, y: 0, width: CGFloat(Constants.boundarySIMD2.x), height: CGFloat(Constants.boundarySIMD2.y)))
 
-  @Published private(set) var boundary: CGSize = Constants.boundarySIMD2.size
-  @Published private(set) var isPlaying: Bool = false
+  /// The size of the simulation boundary.
+  private(set) var boundary: CGSize = Constants.boundarySIMD2.size
+  /// Whether the simulation is currently running continuously.
+  private(set) var isPlaying: Bool = false
 
-  /// Controls for the ecosystem
-  @Published var controls = Controls()
+  /// Controls for the ecosystem.
+  var controls = Controls()
 
-
-  @Published private(set) var movesPerSecond: Int = 0
+  /// Current simulation throughput in moves per second.
+  private(set) var movesPerSecond: Int = 0
 
   // MARK: - Private Properties
   
   private let ecosystem: Ecosystem
-  private var cancellables = Set<AnyCancellable>()
+  private var updateTask: Task<Void, Never>?
 
   // MARK: - Initialization
   
@@ -36,38 +40,12 @@ class EcosystemViewModel: ObservableObject {
   }
 
   func subscribeToUpdates() {
-    Task {
-      await ecosystem.statePublisher
-        .receive(on: DispatchQueue.global(qos: .userInteractive))
-        .sink { [weak self] state in
-          guard let self else { return }
-
-          Task { @MainActor in
-            self.movesPerSecond = state.movesPerSecond
-          }
-
-          // Update derived UI state
-          Task { @MainActor in
-            await self.updatePaths(from: state)
-          }
-
-        }
-        .store(in: &cancellables)
-    }
-
-    var updateControlsTask: Task<Void, Never>?
-    $controls
-      .sink { [weak self] controls in
-        guard let self else { return }
-        updateControlsTask?.cancel()
-        updateControlsTask = Task { @MainActor in
-          if self.isPlaying {
-            await self.togglePlayback()
-            await self.togglePlayback()
-          }
-        }
+    updateTask = Task {
+      for await state in await ecosystem.stateStream {
+        self.movesPerSecond = state.movesPerSecond
+        await self.updatePaths(from: state)
       }
-      .store(in: &cancellables)
+    }
   }
   
   private func updatePaths(from state: EcosystemState) async { 
@@ -102,12 +80,13 @@ class EcosystemViewModel: ObservableObject {
     
   }
 
-  nonisolated lazy var updateMovesPerSecond: (Int) -> Void = { [weak self] movesPerSecond in
+    @ObservationIgnored nonisolated lazy var updateMovesPerSecond: ((Int) -> Void) = { [weak self] movesPerSecond in
     Task { @MainActor in
       self?.movesPerSecond = movesPerSecond
     }
   }
 
+  /// Adds a single randomly generated organism to the ecosystem using the current control values.
   func addRandomOrganism() {
     Task {
       await ecosystem.addRandomOrganism(
@@ -145,11 +124,14 @@ class EcosystemViewModel: ObservableObject {
   }
 
   deinit {
-    cancellables.forEach { $0.cancel() }
+      var task = Task {
+          await updateTask?.cancel()
+      }
   }
   
   // MARK: - Public Methods
   
+  /// Resets the ecosystem and repopulates it with organisms and shelters based on the current controls.
   func reset() {
     Task {
       await ecosystem.reset(
@@ -157,7 +139,8 @@ class EcosystemViewModel: ObservableObject {
         movementLimit: controls.movementLimit,
         divisionThreshold: controls.divisionThreshold,
         shelterResetInterval: controls.shelterResetInterval,
-        minOrganismCount: controls.minOrganismCount
+        minOrganismCount: controls.minOrganismCount,
+        deadOrganismsBecomeShelters: controls.deadOrganismsBecomeShelters
       )
       await ecosystem.addRandomShelter(count: controls.shelterCount)
       await ecosystem.addRandomOrganism(
@@ -170,13 +153,15 @@ class EcosystemViewModel: ObservableObject {
     }
   }
   
+  /// Toggles between continuous playback and paused state.
   func togglePlayback() async {
     isPlaying.toggle()
     if isPlaying {
       await ecosystem.startMoving(
         updateMovesPerSecond: self.updateMovesPerSecond,
         metalIterationCount: UInt32(controls.iterationCount),
-        energyGainRate: controls.shelterEnergyGainRate
+        energyGainRate: controls.shelterEnergyGainRate,
+        refreshRate: controls.refreshRate
       )
     } else {
       await ecosystem.stopMoving()

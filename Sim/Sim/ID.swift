@@ -7,6 +7,7 @@
 
 import Foundation
 
+/// Categories of identifiable entities in the simulation.
 enum IDType: String, Hashable, CaseIterable {
   case organism
   case segment
@@ -14,6 +15,11 @@ enum IDType: String, Hashable, CaseIterable {
   case shelter
 }
 
+/// A unique identifier for simulation entities such as organisms, segments, points, and shelters.
+///
+/// `SimID` maintains per-type auto-incrementing counters to guarantee uniqueness.
+/// When an organism duplicates, its duplicate receives a derived identifier that
+/// encodes the parent relationship and duplication generation.
 struct SimID: Hashable, Equatable, CustomStringConvertible, Identifiable {
   var id: SimID {
     self
@@ -43,6 +49,10 @@ struct SimID: Hashable, Equatable, CustomStringConvertible, Identifiable {
     self.duplicateCount = duplicateCount
   }
 
+  /// Returns a new identifier derived from this one, representing a duplicate entity.
+  ///
+  /// If this identifier is already a duplicate, the returned identifier shares the same
+  /// parent but increments the duplication counter.
   func duplicated() -> SimID {
     if let parentId = parentIdentifier {
       // If this is already a duplicate, create a new one with same parent but different count
@@ -65,19 +75,22 @@ struct SimID: Hashable, Equatable, CustomStringConvertible, Identifiable {
     identifier
   }
 
-  // Change to static computed properties
+  /// Creates a new organism identifier.
   static var organism: SimID {
     SimID(type: .organism)
   }
   
+  /// Creates a new segment identifier.
   static var segment: SimID {
     SimID(type: .segment)
   }
   
+  /// Creates a new point identifier.
   static var point: SimID {
     SimID(type: .point)
   }
   
+  /// Creates a new shelter identifier.
   static var shelter: SimID {
     SimID(type: .shelter)
   }

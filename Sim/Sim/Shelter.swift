@@ -24,15 +24,9 @@ struct Shelter: Hashable, Identifiable {
     self.size = size
   }
   
-  /// Returns whether a point is inside the shelter
-  func contains(_ point: SIMD2<Float>) -> Bool {
-    let endPosition = position + size
-    return point.x >= position.x && point.x <= endPosition.x && 
-           point.y >= position.y && point.y <= endPosition.y
-  }
 }
 
 // MARK: - Metal Compatibility
 
-// Since Shelter now matches the Metal format exactly, we can use typealias
+/// Type alias indicating that `Shelter` is directly compatible with the Metal buffer layout.
 typealias MetalShelter = Shelter 

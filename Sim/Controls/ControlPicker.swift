@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// A generic segmented picker control that displays a labeled row of options.
+///
+/// The picker formats numeric values using the locale's decimal style by default,
+/// or uses custom labels when provided.
 struct ControlPicker<Value: Hashable & CustomStringConvertible>: View {
   let title: String
   @Binding var selectedOption: Value
@@ -68,6 +72,8 @@ struct ControlPicker<Value: Hashable & CustomStringConvertible>: View {
 }
 
 #Preview {
-  ControlPicker(title: "Picker", selectedOption: .constant(1), options: [1, 2, 3], onChange: nil)
-    .pickerStyle(.menu)
+  List {
+    ControlPicker(title: "Picker", selectedOption: .constant(1), options: [1, 2, 3], onChange: nil)
+  }
+  .pickerStyle(.palette)
 }

@@ -6,13 +6,12 @@
 //
 
 import SwiftUI
-import Combine
 
 /// The main view of the application that displays the ecosystem and its controls
 struct ContentView: View {
   // MARK: - State Objects
 
-  @ObservedObject private var viewModel = EcosystemViewModel()
+  private var viewModel: EcosystemViewModel
   @Environment(\.horizontalSizeClass) private var horizontalSizeClass
   @State private var sheetHeight: PresentationDetent = .medium
 
@@ -22,6 +21,8 @@ struct ContentView: View {
   // MARK: - State
 
   @State var rect: CGRect?
+  @State var showDetails: Bool = true
+  @State var columnVisibility: NavigationSplitViewVisibility = .doubleColumn
 
   // MARK: - Body
   
@@ -30,10 +31,29 @@ struct ContentView: View {
       // iPhone layout
       ZStack {
         canvasView
+        if !showDetails {
+          VStack {
+            Spacer()
+            HStack {
+              Spacer()
+              Button(action: {
+                showDetails.toggle()
+              }) {
+                Image(systemName: "inset.filled.bottomhalf.rectangle.portrait")
+                  .foregroundStyle(.primary)
+                  .font(.title)
+                  .padding()
+                  .background(Circle().fill(.primary.quinary))
+              }
+              .padding()
+            }
+          }
+        }
+
         
         // Empty view to anchor sheet presentation
         Color.clear
-          .sheet(isPresented: .constant(true)) {
+          .sheet(isPresented: $showDetails) {
             ControlView(viewModel: viewModel)
               .presentationDetents([.fraction(1/8), .medium, .large], selection: $sheetHeight)
               .presentationDragIndicator(.visible)
@@ -44,12 +64,13 @@ struct ContentView: View {
 
     } else {
       // iPad/Mac layout (existing NavigationSplitView)
-      NavigationSplitView {
+      NavigationSplitView(columnVisibility: $columnVisibility) {
         ControlView(viewModel: viewModel)
+          .navigationSplitViewColumnWidth(300)
       } detail: {
-        canvasView
+        canvasView      .navigationSplitViewStyle(.prominentDetail)
+
       }
-      .navigationSplitViewStyle(.prominentDetail)
     }
   }
   
@@ -73,7 +94,7 @@ struct ContentView: View {
 // MARK: - Preview
 
 #Preview {
-  @Previewable @StateObject var viewModel = EcosystemViewModel()
+  @Previewable @State var viewModel = EcosystemViewModel()
 
   ContentView(viewModel: viewModel)
 }

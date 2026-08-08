@@ -6,97 +6,54 @@
 //
 
 import XCTest
-import Combine
 
 @testable import Sim
-class SimTests: XCTestCase {
 
-  var cancellables = Set<AnyCancellable>()
+/// Smoke tests verifying the simulation actually advances when stepped.
+///
+/// These are not benchmarks — see ``MovesPerSecondBenchmarks`` for throughput
+/// measurements used to compare performance optimizations.
+final class SimTests: XCTestCase {
 
-  @MainActor
-  func test_mps10() async {
-    var mpsHistory: [Int] = []
-    for _ in 0..<50 {
-      mpsHistory.append(await mps(10))
-    }
-    let average = mpsHistory.reduce(0) { $0 + $1 } / mpsHistory.count
-    print("\(average)mps")
+  /// Energy high enough that organisms never die during a benchmark window
+  /// (energy drops by at most 1 every 10 GPU iterations) but well below the
+  /// default 200_000 division threshold so the topology never grows mid-run.
+  private static let benchmarkEnergy: Int32 = 100_000
+
+  func test_step_advancesPoints() async {
+    let ecosystem = Ecosystem()
+    await ecosystem.addRandomOrganism(
+      length: 10,
+      movementLimit: 0.05,
+      count: 5,
+      minEnergy: Self.benchmarkEnergy,
+      maxEnergy: Self.benchmarkEnergy
+    )
+
+    let before = await ecosystem.points
+    await ecosystem.step(metalIterationCount: 100, energyGainRate: 1)
+    let after = await ecosystem.points
+
+    XCTAssertEqual(before.count, after.count, "step must not change topology")
+    XCTAssertNotEqual(before, after, "step must move at least one point")
   }
 
-  @MainActor
-  func test_mps100() async {
-    var mpsHistory: [Int] = []
-    for _ in 0..<50 {
-      mpsHistory.append(await mps(100))
+  func test_step_preservesOrganismCount() async {
+    let ecosystem = Ecosystem()
+    await ecosystem.addRandomOrganism(
+      length: 10,
+      movementLimit: 0.05,
+      count: 10,
+      minEnergy: Self.benchmarkEnergy,
+      maxEnergy: Self.benchmarkEnergy
+    )
+
+    let before = await ecosystem.organisms.count
+    for _ in 0..<5 {
+      await ecosystem.step(metalIterationCount: 100, energyGainRate: 1)
     }
-    let average = mpsHistory.reduce(0) { $0 + $1 } / mpsHistory.count
-    print("\(average)mps")
+    let after = await ecosystem.organisms.count
+
+    XCTAssertEqual(before, after, "no shelters + sub-threshold energy must not divide or kill organisms")
   }
-
-  @MainActor
-  func test_mps1000() async {
-    var mpsHistory: [Int] = []
-    for _ in 0..<50 {
-      mpsHistory.append(await mps(1000))
-    }
-    let average = mpsHistory.reduce(0) { $0 + $1 } / mpsHistory.count
-    print("\(average)mps")
-  }
-
-  @MainActor
-  func mps(_ count: Int) async -> Int {
-    var ecosystem: Ecosystem? = Ecosystem()
-    await ecosystem?.addRandomOrganism(length: 10, movementLimit: 0.05, count: count)
-    let exp = expectation(description: "Waiting for MPS measurement")
-    var mps: Int = 0
-    
-    // Create a flag to track if we've already fulfilled the expectation
-    var isExpFulfilled = false
-    
-    // Add a timeout task to ensure we don't wait forever
-    let timeoutTask = Task {
-      try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 seconds timeout
-      if !isExpFulfilled {
-        isExpFulfilled = true
-        exp.fulfill()
-      }
-    }
-    
-    await ecosystem?.mpsPublisher
-      .sink { mpsResult in
-        mps = mpsResult
-        Task {
-          await ecosystem?.stopMoving()
-          if !isExpFulfilled {
-            isExpFulfilled = true
-            exp.fulfill()
-          }
-        }
-      }
-      .store(in: &cancellables)
-    
-    // Use a shorter mpsInterval (0.5 seconds) for faster test execution
-    await ecosystem?.startMoving(frameRate: 0, updateMovesPerSecond: { _ in }, mpsInterval: 0.05)
-
-    // Wait for either the mpsPublisher to emit or the timeout to occur
-    await fulfillment(of: [exp], timeout: 3) // 3 second timeout as additional safety
-    
-    // Cancel the timeout task if it's still running
-    timeoutTask.cancel()
-    
-    // If we didn't get an actual MPS value, calculate an approximate one
-    if mps == 0 {
-      // Get an approximate MPS value based on the current state
-      Task {
-        await ecosystem?.stopMoving()
-      }
-      // Default to a reasonable value if we couldn't get a real measurement
-      mps = count / 10 // Simple approximation
-    }
-    
-    ecosystem = nil
-    return mps
-  }
-
-
 }

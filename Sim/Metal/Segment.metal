@@ -58,9 +58,7 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
 {
   // Get organism metadata
   OrganismMetadata meta = *metadata;
-  uint pointStartIndex = pointIndices[id];
-  uint pointEndIndex = pointIndices[id + 1];
-  uint pointCount = pointEndIndex - pointStartIndex;
+  uint pointCount = pointIndices[id + 1] - pointIndices[id];
   
   uint segmentStartIndex = segmentIndices[id];
   uint segmentEndIndex = segmentIndices[id + 1];
@@ -69,8 +67,7 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
   // Determine if organism is in any shelter at the start
   bool isInShelter = false;
   for (uint i = 0; i < pointCount; i++) {
-    uint globalPointIndex = pointStartIndex + i;
-    float2 point = points[globalPointIndex];
+    float2 point = points[pointIndices[id] + i];
     
     for (uint s = 0; s < meta.shelterCount; s++) {
       if (isPointInShelter(point, shelters[s])) {
@@ -94,15 +91,14 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
 
       // Only rotate points after current segment
       for (uint j = i + 1; j < pointCount; j++) {
-        uint globalPointIndex = pointStartIndex + j;
         // Translate to origin
-        float2 translated = points[globalPointIndex] - points[pointStartIndex + i];
+        float2 translated = points[pointIndices[id] + j] - points[pointIndices[id] + i];
 
         // Translate back
-        points[globalPointIndex] = float2(
+        points[pointIndices[id] + j] = float2(
           translated.x * cos_angle - translated.y * sin_angle,
           translated.x * sin_angle + translated.y * cos_angle
-        ) + points[pointStartIndex + i];
+        ) + points[pointIndices[id] + i];
       }
     }
 
@@ -116,15 +112,14 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
 
       // Only rotate points before current segment
       for (int j = 0; j <= i; j++) {
-        uint globalPointIndex = pointStartIndex + j;
         // Translate to origin
-        float2 translated = points[globalPointIndex] - points[pointStartIndex + i + 1];
+        float2 translated = points[pointIndices[id] + j] - points[pointIndices[id] + i + 1];
 
         // Translate back
-        points[globalPointIndex] = float2(
+        points[pointIndices[id] + j] = float2(
           translated.x * negative_cos_angle - translated.y * negative_sin_angle,
           translated.x * negative_sin_angle + translated.y * negative_cos_angle
-        ) + points[pointStartIndex + i + 1];
+        ) + points[pointIndices[id] + i + 1];
       }
     }
 
@@ -135,8 +130,7 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
 
       // Check each point against each shelter
       for (uint i = 0; i < pointCount; i++) {
-        uint globalPointIndex = pointStartIndex + i;
-        float2 point = points[globalPointIndex];
+        float2 point = points[pointIndices[id] + i];
 
         for (uint s = 0; s < meta.shelterCount; s++) {
           if (isPointInShelter(point, shelters[s])) {
@@ -166,8 +160,7 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
 
       // Find min/max coordinates
       for (uint i = 0; i < pointCount; i++) {
-        uint globalPointIndex = pointStartIndex + i;
-        float2 point = points[globalPointIndex];
+        float2 point = points[pointIndices[id] + i];
 
         minX = min(minX, point.x);
         minY = min(minY, point.y);
@@ -194,9 +187,8 @@ kernel void moveOrganisms(device float2* points [[buffer(0)]],
       // Apply translation if needed
       if (dx != 0 || dy != 0) {
         for (uint i = 0; i < pointCount; i++) {
-          uint globalPointIndex = pointStartIndex + i;
-          points[globalPointIndex].x += dx;
-          points[globalPointIndex].y += dy;
+          points[pointIndices[id] + i].x += dx;
+          points[pointIndices[id] + i].y += dy;
         }
       }
     }

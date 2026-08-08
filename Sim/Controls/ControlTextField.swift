@@ -7,6 +7,10 @@
 
 import SwiftUI
 
+/// A type that can be initialized from a string representation.
+///
+/// Conforming types are used with ``ControlTextField`` to parse user input
+/// into the appropriate numeric value.
 protocol ConvertsFromString {
   init?(_ string: String)
 }
@@ -17,6 +21,7 @@ extension Float: ConvertsFromString {}
 extension Int: ConvertsFromString {}
 extension Int32: ConvertsFromString {}
 
+/// A labeled text field that parses its input into a generic numeric value via ``ConvertsFromString``.
 struct ControlTextField<Value: ConvertsFromString>: View {
   let title: String
   @Binding var value: Value
@@ -68,7 +73,7 @@ struct ControlTextField<Value: ConvertsFromString>: View {
 }
 
 #Preview {
-  @Previewable @StateObject var viewModel = EcosystemViewModel()
+  @Previewable @State var viewModel = EcosystemViewModel()
 
   ContentView(viewModel: viewModel)
 }

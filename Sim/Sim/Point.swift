@@ -13,67 +13,6 @@ import simd
 
 extension SIMD2<Float> {
   
-  // MARK: - Rounding and Comparison
-  
-  /// The granularity used for rounding operations
-  static let roughness: Float = 10
-  
-  /// Returns a string representation of the point with rounded coordinates
-  var roughDescription: String {
-    return "(" + (~self).x.description + ", " + (~self).y.description + ")"
-  }
-  
-  /// Compares two points after rounding them
-  /// - Returns: True if the rounded points are equal
-  static func ~= (lhs: SIMD2<Float>, rhs: SIMD2<Float>) -> Bool {
-    ~lhs == ~rhs
-  }
-  
-  /// Rounds the point coordinates to the nearest multiple of roughness
-  /// - Returns: A new point with rounded coordinates
-  static prefix func ~(lhs: SIMD2<Float>) -> SIMD2<Float> {
-    let xr = lhs.x.rounded()
-    let yr = lhs.y.rounded()
-    let x = xr - xr.truncatingRemainder(dividingBy: Self.roughness)
-    let y = yr - yr.truncatingRemainder(dividingBy: Self.roughness)
-    return SIMD2<Float>(x: x, y: y)
-  }
-  
-  // MARK: - Rotation
-  
-  /// Rotates the point around the specified origin by the given angle
-  /// - Parameters:
-  ///   - origin: The point to rotate around
-  ///   - cosAngle: The cosine of the rotation angle
-  ///   - sinAngle: The sine of the rotation angle
-  /// - Returns: A new rotated point
-  func rotated(around origin: SIMD2<Float>, cosAngle: Float, sinAngle: Float) -> SIMD2<Float> {
-    SIMD2<Float>(
-      x: rotatedX(around: origin, cosAngle: cosAngle, sinAngle: sinAngle) + origin.x,
-      y: rotatedY(around: origin, cosAngle: cosAngle, sinAngle: sinAngle) + origin.y
-    )
-  }
-  
-  /// Calculates the x-coordinate after rotation
-  /// - Parameters:
-  ///   - origin: The point to rotate around
-  ///   - cosAngle: The cosine of the rotation angle
-  ///   - sinAngle: The sine of the rotation angle
-  /// - Returns: The rotated x-coordinate
-  func rotatedX(around origin: SIMD2<Float>, cosAngle: Float, sinAngle: Float) -> Float {
-    (self.x - origin.x) * cosAngle - (self.y - origin.y) * sinAngle
-  }
-  
-  /// Calculates the y-coordinate after rotation
-  /// - Parameters:
-  ///   - origin: The point to rotate around
-  ///   - cosAngle: The cosine of the rotation angle
-  ///   - sinAngle: The sine of the rotation angle
-  /// - Returns: The rotated y-coordinate
-  func rotatedY(around origin: SIMD2<Float>, cosAngle: Float, sinAngle: Float) -> Float {
-    (self.x - origin.x) * sinAngle + (self.y - origin.y) * cosAngle
-  }
-  
   // MARK: - Conversion and Accessors
   
   /// Converts the SIMD2<Float> to a CGPoint
@@ -85,67 +24,35 @@ extension SIMD2<Float> {
   var size: CGSize {
     .init(width: CGFloat(x), height: CGFloat(y))
   }
-  
-  /// Returns the x component as width
-  var width: Float {
-    x
-  }
-  
-  /// Returns the y component as height
-  var height: Float {
-    y
-  }
 
+  /// Returns a zero-size rectangle positioned at this point, useful as a starting value for bounding-box calculations.
   var rectangle: simd_float2x2 {
     .init(self, .zero)
   }
 }
 
-extension CGPoint {
-  var simd2: SIMD2<Float> {
-    .init(Float(x), Float(y))
-  }
-}
 
-extension CGSize {
-  var simd2: SIMD2<Float> {
-    .init(Float(width), Float(height))
-  }
-}
-
-
+/// Rectangle helpers that treat a `simd_float2x2` as `(origin, size)`.
 extension simd_float2x2 {
 
+  /// The minimum x coordinate (origin x).
   var minX: Float {
     columns.0.x
   }
 
+  /// The minimum y coordinate (origin y).
   var minY: Float {
     columns.0.y
   }
 
+  /// The maximum x coordinate (origin x + width).
   var maxX: Float {
     columns.0.x + columns.1.x
   }
 
+  /// The maximum y coordinate (origin y + height).
   var maxY: Float {
     columns.0.y + columns.1.y
-  }
-
-  var width: Float {
-    columns.1.x
-  }
-
-  var height: Float {
-    columns.1.y
-  }
-
-  var midX: Float {
-    columns.0.x + columns.1.x / 2
-  }
-
-  var midY: Float {
-    columns.0.y + columns.1.y / 2
   }
   
   /// Returns a new SIMD4 that is the smallest rectangle containing both this rectangle and the specified point.
